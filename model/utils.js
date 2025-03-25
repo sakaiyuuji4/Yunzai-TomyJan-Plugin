@@ -272,6 +272,8 @@ export async function imagesToPDF(inputDir, outputPath) {
     .sort()
 
   const pdfDoc = await PDFDocument.create()
+  const oldTitle = pdfDoc.getTitle() || '未命名'
+  pdfDoc.setTitle(`JMComic-${oldTitle}_${files.length}P_Powered-By-TomyJan`)
 
   for (const file of files) {
     const imgPath = path.join(inputDir, file)
