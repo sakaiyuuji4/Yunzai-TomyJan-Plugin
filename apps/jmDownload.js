@@ -99,7 +99,15 @@ export class pluginHelpApp extends plugin {
         // 发送 PDF
         if (this.e.isGroup) {
           this.e.group.recallMsg(downloadSuccessMsg.message_id)
-          let ret = await this.e.group.sendFile(pdfPath)
+          let ret
+          try {
+            ret = await this.e.group.fs.upload(pdfPath)
+          } catch (e) {
+            tjLogger.error(`发送文件失败: ${e.message}`)
+            ret = null
+            this.reply(`文件发送失败, 错误信息: ${e.message}`)
+          }
+          tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
           fs.unlinkSync(pdfPath)
           this.e.group.recallMsg(prepareSendFileMsg.message_id)
           if (ret !== null && typeof ret !== 'object') {
@@ -108,7 +116,15 @@ export class pluginHelpApp extends plugin {
           return null
         } else if (this.e.isPrivate) {
           this.e.friend.recallMsg(downloadSuccessMsg.message_id)
-          let ret = await this.e.friend.sendFile(pdfPath)
+          let ret
+          try {
+            ret = await this.e.friend.fs.upload(pdfPath)
+          } catch (e) {
+            tjLogger.error(`发送文件失败: ${e.message}`)
+            ret = null
+            this.reply(`文件发送失败, 错误信息: ${e.message}`)
+          }
+          tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
           fs.unlinkSync(pdfPath)
           this.e.friend.recallMsg(prepareSendFileMsg.message_id)
           if (ret !== null && typeof ret !== 'object') {
