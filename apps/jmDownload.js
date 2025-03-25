@@ -92,7 +92,9 @@ export class pluginHelpApp extends plugin {
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
         // 转换成功删掉下载的图片
-        fs.rm(downloadPath, { recursive: true })
+        fs.rm(downloadPath, { recursive: true, force: true }, err => {
+          if (err) tjLogger.warn(`删除下载的图片路径 ${downloadPath} 失败: ${err.message}`)
+        });
         let prepareSendFileMsg = await this.reply('转 PDF 成功, 准备发送...')
         // 发送 PDF
         if (this.e.isGroup) {
