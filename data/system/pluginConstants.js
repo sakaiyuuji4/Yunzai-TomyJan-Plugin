@@ -35,4 +35,4 @@ export const _CfgPath = `${process // 绝对目录
 // 其它信息
 export const pluginThemeColor = chalk.rgb(57, 197, 187)
 
-export const isWin = process.platform === 'win32';
+export const isWin = process.platform === 'win32'

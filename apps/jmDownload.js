@@ -46,7 +46,8 @@ export class pluginHelpApp extends plugin {
     let commandResult = {}
     commandResult = await runCommand(command)
     tjLogger.debug(`jmcomic 命令测试结果: ${JSON.stringify(commandResult)}`)
-    if (!commandResult.output) { // 命令不存在
+    if (!commandResult.output) {
+      // 命令不存在
       this.reply('JMComic 命令不存在, 请先按照教程安装 JMComic', true)
       if (this.e.group) this.e.group.recallMsg(jmPrepareMsg.message_id)
       if (this.e.friend) this.e.friend.recallMsg(jmPrepareMsg.message_id)
@@ -62,14 +63,24 @@ export class pluginHelpApp extends plugin {
     if (this.e.group) this.e.group.recallMsg(jmPrepareMsg.message_id)
     if (this.e.friend) this.e.friend.recallMsg(jmPrepareMsg.message_id)
 
-    if (!commandResult.output) { // 运行出现错误
-      await this.reply(`下载失败, 请检查 ID 是否正确. 错误信息: ${commandResult.err}`, true)
+    if (!commandResult.output) {
+      // 运行出现错误
+      await this.reply(
+        `下载失败, 请检查 ID 是否正确. 错误信息: ${commandResult.err}`,
+        true
+      )
       return
-    } else if (commandResult.output.includes('jmcomic.jm_exception')) { // 命令结果有 JMComic 的报错
+    } else if (commandResult.output.includes('jmcomic.jm_exception')) {
+      // 命令结果有 JMComic 的报错
       // 出错了, 取回 jmcomic 报错的内容
-      const match = commandResult.output.match(/MissingAlbumPhotoException\('([^']+)/)
+      const match = commandResult.output.match(
+        /MissingAlbumPhotoException\('([^']+)/
+      )
       if (match) {
-        this.reply(`下载失败, 错误信息: \n${match[1].replace(/\\n/g, '\n').trim()}`, true)
+        this.reply(
+          `下载失败, 错误信息: \n${match[1].replace(/\\n/g, '\n').trim()}`,
+          true
+        )
       } else {
         let msg = await common.makeForwardMsg(
           this.e,
@@ -83,19 +94,30 @@ export class pluginHelpApp extends plugin {
         await this.reply(msg, true)
         return
       }
-    } else if (commandResult.output.includes('本子下载完成')) { // 下载成功
+    } else if (commandResult.output.includes('本子下载完成')) {
+      // 下载成功
       let downloadSuccessMsg = await this.reply('下载成功, 准备转换...', true)
       const downloadPath = `${_DataPath}/JMComic/cache/download/${id}`
       const pdfPath = `${_DataPath}/JMComic/cache/convert/${id}.pdf`
       // 开始将该路径中的图片合并成 PDF
-      let convertResult = await imagesToPDF(downloadPath, pdfPath, `JMComic-${id}_Powered-By-TomyJan`)
+      let convertResult = await imagesToPDF(
+        downloadPath,
+        pdfPath,
+        `JMComic-${id}_Powered-By-TomyJan`
+      )
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
         // 转换成功删掉下载的图片
-        fs.rm(downloadPath, { recursive: true, force: true }, err => {
-          if (err) tjLogger.warn(`删除下载的图片路径 ${downloadPath} 失败: ${err.message}`)
-        });
-        let prepareSendFileMsg = await this.reply('转 PDF 成功, 准备发送...', true)
+        fs.rm(downloadPath, { recursive: true, force: true }, (err) => {
+          if (err)
+            tjLogger.warn(
+              `删除下载的图片路径 ${downloadPath} 失败: ${err.message}`
+            )
+        })
+        let prepareSendFileMsg = await this.reply(
+          '转 PDF 成功, 准备发送...',
+          true
+        )
         // 发送 PDF
         if (this.e.isGroup) {
           this.e.group.recallMsg(downloadSuccessMsg.message_id)
@@ -103,7 +125,8 @@ export class pluginHelpApp extends plugin {
           try {
             ret = await this.e.group.fs.upload(pdfPath)
           } catch (e) {
-            if (e.message == 'group space not enough') e.message = '群文件空间不足'
+            if (e.message == 'group space not enough')
+              e.message = '群文件空间不足'
             tjLogger.error(`发送文件失败: ${e.message}`)
             ret = null
             this.reply(`文件发送失败, 错误信息: ${e.message}`, true)
@@ -138,7 +161,8 @@ export class pluginHelpApp extends plugin {
       } else {
         this.reply(`图片转 PDF 失败, 错误信息: ${convertResult}`, true)
       }
-    } else { // 这真的是未知错误了
+    } else {
+      // 这真的是未知错误了
       let msg = await common.makeForwardMsg(
         this.e,
         [

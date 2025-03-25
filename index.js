@@ -5,10 +5,7 @@ import {
   pluginVer,
   pluginThemeColor,
 } from './data/system/pluginConstants.js'
-import {
-  initAutoTask,
-  checkUpdateTask,
-} from './model/autoTask.js'
+import { initAutoTask, checkUpdateTask } from './model/autoTask.js'
 
 await tjLogger.info(pluginThemeColor('============(≧∇≦)ﾉ============'))
 await tjLogger.info(pluginThemeColor(`TJ插件 V${pluginVer} 开始载入~`))

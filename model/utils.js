@@ -244,19 +244,23 @@ export async function sendMsgFriend(uin, msg) {
  */
 export async function runCommand(command) {
   return await new Promise((resolve) => {
-    exec(command, { encoding: isWin ? 'buffer' : 'utf8' }, (error, stdout, stderr) => {
-      const output = (isWin ? iconv.decode(stdout, 'gbk') : stdout).trim();
-      const err = (isWin ? iconv.decode(stderr, 'gbk') : stderr).trim();
+    exec(
+      command,
+      { encoding: isWin ? 'buffer' : 'utf8' },
+      (error, stdout, stderr) => {
+        const output = (isWin ? iconv.decode(stdout, 'gbk') : stdout).trim()
+        const err = (isWin ? iconv.decode(stderr, 'gbk') : stderr).trim()
 
-      if (error) {
-        tjLogger.warn(`执行命令 ${command} 出错: ${err}`);
-      } else {
-        tjLogger.debug(`执行命令 ${command} 结果: ${output}`);
+        if (error) {
+          tjLogger.warn(`执行命令 ${command} 出错: ${err}`)
+        } else {
+          tjLogger.debug(`执行命令 ${command} 结果: ${output}`)
+        }
+
+        resolve({ output, err })
       }
-
-      resolve({ output, err });
-    });
-  });
+    )
+  })
 }
 
 /**
@@ -268,8 +272,9 @@ export async function runCommand(command) {
  */
 export async function imagesToPDF(inputDir, outputPath, pdfTitle) {
   tjLogger.debug('将目录下的图片转为 PDF:', inputDir, outputPath)
-  const files = fs.readdirSync(inputDir)
-    .filter(f => /\.(jpe?g|png)$/i.test(f))
+  const files = fs
+    .readdirSync(inputDir)
+    .filter((f) => /\.(jpe?g|png)$/i.test(f))
     .sort()
 
   const pdfDoc = await PDFDocument.create()
