@@ -88,7 +88,7 @@ export class pluginHelpApp extends plugin {
       const downloadPath = `${_DataPath}/JMComic/cache/download/${id}`
       const pdfPath = `${_DataPath}/JMComic/cache/convert/${id}.pdf`
       // 开始将该路径中的图片合并成 PDF
-      let convertResult = await imagesToPDF(downloadPath, pdfPath)
+      let convertResult = await imagesToPDF(downloadPath, pdfPath, `JMComic-${id}_Powered-By-TomyJan`)
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
         // 转换成功删掉下载的图片

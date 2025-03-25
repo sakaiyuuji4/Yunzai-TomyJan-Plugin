@@ -263,17 +263,17 @@ export async function runCommand(command) {
  * 将目录下的图片转为 PDF
  * @param {string} inputDir 输入目录
  * @param {string} outputPath 输出 PDF 路径
+ * @param {string} pdfTitle PDF 标题
  * @returns {Promise<string>} 转换成功返回 PDF 路径
  */
-export async function imagesToPDF(inputDir, outputPath) {
+export async function imagesToPDF(inputDir, outputPath, pdfTitle) {
   tjLogger.debug('将目录下的图片转为 PDF:', inputDir, outputPath)
   const files = fs.readdirSync(inputDir)
     .filter(f => /\.(jpe?g|png)$/i.test(f))
     .sort()
 
   const pdfDoc = await PDFDocument.create()
-  const oldTitle = pdfDoc.getTitle() || '未命名'
-  pdfDoc.setTitle(`JMComic-${oldTitle}_${files.length}P_Powered-By-TomyJan`)
+  pdfDoc.setTitle(pdfTitle)
 
   for (const file of files) {
     const imgPath = path.join(inputDir, file)
