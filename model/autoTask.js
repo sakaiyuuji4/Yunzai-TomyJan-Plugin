@@ -8,13 +8,14 @@ import {
 } from '../data/system/pluginConstants.js'
 import { sendMsgFriend } from './utils.js'
 import cfg from '../../../lib/config/config.js'
-import config from '../components/config.js'
+// import config from '../components/config.js'
 
 export async function initAutoTask() {
-  if (!config.getConfig()?.autoTask?.enabled) {
-    tjLogger.info(pluginThemeColor(`自动任务已被禁用, 取消载入定时任务`))
-    return false
-  }
+  // TODO: 加回来定时任务相关配置
+  // if (!config.getConfig()?.autoTask?.enabled) {
+  //   tjLogger.info(pluginThemeColor(`自动任务已被禁用, 取消载入定时任务`))
+  //   return false
+  // }
 
   tjLogger.info(pluginThemeColor(`载入定时任务 checkUpdateTask`))
   schedule.scheduleJob('0 0 6/12 * * ? ', function () {

@@ -3,10 +3,16 @@ import config from '../components/config.js'
 import crypto from 'crypto'
 import { dataPath, resPath } from '../data/system/pluginConstants.js'
 import fs from 'fs'
+import path from 'path'
 import fetch from 'node-fetch'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import zhCN from 'date-fns/locale/zh-CN'
 import { Buffer } from 'buffer'
+import { isWin } from '../data/system/pluginConstants.js'
+import { exec } from 'child_process'
+import iconv from 'iconv-lite'
+import { PDFDocument } from 'pdf-lib'
+import sharp from 'sharp'
 
 /**
  * 程序延时
@@ -229,4 +235,67 @@ export async function sendMsgFriend(uin, msg) {
   } else {
     tjLogger.warn(`${uin} 非好友, 无法推送消息`)
   }
+}
+
+/**
+ * 执行命令
+ * @param {string} command 命令
+ * @returns {Promise<{output: string, err: string}>} 命令执行结果
+ */
+export async function runCommand(command) {
+  return await new Promise((resolve) => {
+    exec(command, { encoding: isWin ? 'buffer' : 'utf8' }, (error, stdout, stderr) => {
+      const output = (isWin ? iconv.decode(stdout, 'gbk') : stdout).trim();
+      const err = (isWin ? iconv.decode(stderr, 'gbk') : stderr).trim();
+
+      if (error) {
+        tjLogger.warn(`执行命令 ${command} 出错: ${err}`);
+      } else {
+        tjLogger.debug(`执行命令 ${command} 结果: ${output}`);
+      }
+
+      resolve({ output, err });
+    });
+  });
+}
+
+/**
+ * 将目录下的图片转为 PDF
+ * @param {string} inputDir 输入目录
+ * @param {string} outputPath 输出 PDF 路径
+ * @returns {Promise<string>} 转换成功返回 PDF 路径
+ */
+export async function imagesToPDF(inputDir, outputPath) {
+  tjLogger.debug('将目录下的图片转为 PDF:', inputDir, outputPath)
+  const files = fs.readdirSync(inputDir)
+    .filter(f => /\.(jpe?g|png)$/i.test(f))
+    .sort()
+
+  const pdfDoc = await PDFDocument.create()
+
+  for (const file of files) {
+    const imgPath = path.join(inputDir, file)
+    const imgBuffer = fs.readFileSync(imgPath)
+
+    // 获取图片尺寸
+    const { width, height } = await sharp(imgBuffer).metadata()
+
+    const imgSharp = sharp(imgBuffer).jpeg()
+    const jpegBuffer = await imgSharp.toBuffer()
+    const embeddedImage = await pdfDoc.embedJpg(jpegBuffer)
+
+    const page = pdfDoc.addPage([width, height])
+    page.drawImage(embeddedImage, {
+      x: 0,
+      y: 0,
+      width,
+      height,
+    })
+  }
+
+  const pdfBytes = await pdfDoc.save()
+  fs.writeFileSync(outputPath, pdfBytes)
+  tjLogger.info('成功转换 PDF:', outputPath)
+
+  return outputPath
 }

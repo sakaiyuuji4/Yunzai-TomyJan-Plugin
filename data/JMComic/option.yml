@@ -1,9 +1,9 @@
 download:
   image:
-    suffix: .png # 该配置用于把下载的图片转为png格式
+    suffix: .jpg # 该配置用于把下载的图片转为png格式
 dir_rule: # 忽略base_dir配置项
   rule: Bd_Aid # A表示本子，id表示本子的id
-  base_dir: jm-down-cache # 该配置用于指定下载的文件存放的目录
+  base_dir: plugins/Yunzai-TomyJan-Plugin/data/JMComic/cache/download # 该配置用于指定下载的文件存放的目录
 
 # client:
 #   domain:
