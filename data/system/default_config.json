@@ -1,0 +1,9 @@
+{
+  "logger": {
+    "logLevel": "info",
+    "saveToFile": false
+  },
+  "useRandomBgInCard": true,
+  "attemptSendNonFriend": true,
+  "botQQ": 0
+}

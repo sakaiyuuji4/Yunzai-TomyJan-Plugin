@@ -1,0 +1,48 @@
+{
+  "!!!WARNING!!!": "这里的字段用于解析 pluginConstants 和生成 changelog, 不要轻易改动",
+  "name": "Yunzai-TomyJan-Plugin",
+  "version": "0.0.1-dev",
+  "author": "TomyJan",
+  "description": "Yunzai-Bot plugin for TomyJan self use.",
+  "type": "module",
+  "keywords": [
+    "yunzai",
+    "plugin",
+    "tomyjan"
+  ],
+  "homepage": "https://github.com/TomyJan/Yunzai-TomyJan-Plugin",
+  "bugs": {
+    "url": "https://github.com/TomyJan/Yunzai-TomyJan-Plugin/issues",
+    "email": "TomyJan6@gmail.com"
+  },
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TomyJan/Yunzai-TomyJan-Plugin"
+  },
+  "scripts": {
+    "format": "prettier --write \"**/*.js\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "crypto": "^1.0.1",
+    "date-fns": "^3.6.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "conventional-changelog": "^3.1.25",
+    "conventional-changelog-cli": "^5.0.0",
+    "conventional-changelog-custom-config": "^0.3.1",
+    "eslint": "^9.16.0",
+    "globals": "^15.12.0",
+    "prettier": "^2.8.8"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  }
+}
