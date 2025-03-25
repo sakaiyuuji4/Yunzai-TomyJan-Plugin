@@ -103,6 +103,7 @@ export class pluginHelpApp extends plugin {
           try {
             ret = await this.e.group.fs.upload(pdfPath)
           } catch (e) {
+            if (e.message == 'group space not enough') e.message = '群文件空间不足'
             tjLogger.error(`发送文件失败: ${e.message}`)
             ret = null
             this.reply(`文件发送失败, 错误信息: ${e.message}`)
