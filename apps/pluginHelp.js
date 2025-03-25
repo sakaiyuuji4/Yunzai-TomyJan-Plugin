@@ -17,7 +17,7 @@ export class pluginHelpApp extends plugin {
       priority: 1000,
       rule: [
         {
-          reg: '^#?(TJ|TomyJan|tomyjan|荼蘼)(插件)?(帮助|菜单|help)$',
+          reg: '^#?(TJ|tj|TomyJan|tomyjan|荼蘼)(插件)?(帮助|菜单|help)$',
           fnc: 'pluginHelpIndex',
         },
       ],

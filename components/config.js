@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import { _CfgPath, _DataPath } from '../data/system/pluginConstants.js'
-import TjLogger from './logger.js'
+import tjLogger from './logger.js'
 
 class ConfigReader {
   constructor() {
@@ -36,8 +36,8 @@ class ConfigReader {
     fs.watchFile(this.filePath, (curr, prev) => {
       if (curr.mtime > prev.mtime) {
         this.configObject = this.readConfig()
-        TjLogger.info('配置文件已更新')
-        TjLogger.setLogLevel(this.configObject.logger.logLevel)
+        tjLogger.info('配置文件已更新')
+        tjLogger.setLogLevel(this.configObject.logger.logLevel)
       }
     })
   }

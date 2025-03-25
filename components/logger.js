@@ -131,13 +131,13 @@ class Logger {
 }
 
 // 初始化全局日志记录器实例
-const TjLogger = new Logger(config.getConfig()?.logger?.logLevel || 'info')
+const tjLogger = new Logger(config.getConfig()?.logger?.logLevel || 'info')
 // eslint-disable-next-line no-undef
 logger.info(chalk.gray(`[TJ插件][LOGGER] Logger initialized!`))
 
-while (typeof TjLogger === 'undefined' || !(TjLogger instanceof Logger)) {
+while (typeof tjLogger === 'undefined' || !(tjLogger instanceof Logger)) {
   // 类尚未初始化，可以加入适当的延时以避免阻塞主线程
   // 例如：使用 setTimeout 或其他方式
   await sleepAsync(100)
 }
-export default TjLogger
+export default tjLogger

@@ -11,7 +11,7 @@ import {
   _CfgPath,
   _DataPath,
 } from './data/system/pluginConstants.js'
-import TjLogger from './components/logger.js'
+import tjLogger from './components/logger.js'
 import { sendMsgFriend } from './model/utils.js'
 import cfg from '../../lib/config/config.js'
 
@@ -111,7 +111,7 @@ export function supportGuoba() {
       // 设置配置的方法（前端点确定后调用的方法）
       setConfigData(data, { Result }) {
         configJson = flattenObject(data)
-        TjLogger.debug('欲保存的新配置数据:', JSON.stringify(configJson))
+        tjLogger.debug('欲保存的新配置数据:', JSON.stringify(configJson))
         let saveRst = updateConfigFile()
         if (saveRst) return Result.error(saveRst)
         else return Result.ok({}, '保存成功辣ε(*´･ω･)з')
@@ -132,9 +132,9 @@ export function supportGuoba() {
       // 比较配置文件更新
       let testConfigJson = mergeObjects(defaultConfigJson, configJson)
       if (JSON.stringify(testConfigJson) !== JSON.stringify(configJson)) {
-        TjLogger.warn('配置文件有更新, 建议检查是否有新的项目需要配置!')
-        TjLogger.debug('testConfigJson:', JSON.stringify(testConfigJson))
-        TjLogger.debug('configJson:', JSON.stringify(configJson))
+        tjLogger.warn('配置文件有更新, 建议检查是否有新的项目需要配置!')
+        tjLogger.debug('testConfigJson:', JSON.stringify(testConfigJson))
+        tjLogger.debug('configJson:', JSON.stringify(configJson))
         configJson = testConfigJson
         updateConfigFile()
         sendMsgFriend(
@@ -145,13 +145,13 @@ export function supportGuoba() {
     } catch (error) {
       if (error.code === 'ENOENT') {
         // 如果config.json不存在，则从default_config.json复制一份
-        TjLogger.warn('config.json 不存在, 生成默认配置...')
+        tjLogger.warn('config.json 不存在, 生成默认配置...')
         const defaultRawData = fs.readFileSync(defaultConfigPath)
         fs.writeFileSync(configPath, defaultRawData)
         configJson = JSON.parse(defaultRawData)
       } else {
         // 处理其他可能的读取错误
-        TjLogger.error('读取 config.json 出错:', error.message)
+        tjLogger.error('读取 config.json 出错:', error.message)
       }
     }
   }
@@ -163,11 +163,11 @@ export function supportGuoba() {
   function updateConfigFile() {
     try {
       fs.writeFileSync(configPath, JSON.stringify(configJson, null, 2))
-      TjLogger.info('更新配置文件成功')
+      tjLogger.info('更新配置文件成功')
       return null
     } catch (error) {
       let errMsg = '更新配置文件失败: ' + error.message
-      TjLogger.error('更新配置文件失败:', errMsg)
+      tjLogger.error('更新配置文件失败:', errMsg)
       return errMsg
     }
   }

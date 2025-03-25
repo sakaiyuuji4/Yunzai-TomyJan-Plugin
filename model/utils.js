@@ -1,4 +1,4 @@
-import TjLogger from '../components/logger.js'
+import tjLogger from '../components/logger.js'
 import config from '../components/config.js'
 import crypto from 'crypto'
 import { dataPath, resPath } from '../data/system/pluginConstants.js'
@@ -67,7 +67,7 @@ export function generateUUID(inputString) {
     '-' +
     hash.substring(20, 32)
 
-  TjLogger.debug(`使用 ${inputString} 生成 UUID ${uuid}`)
+  tjLogger.debug(`使用 ${inputString} 生成 UUID ${uuid}`)
   return uuid
 }
 
@@ -79,13 +79,13 @@ export function generateUUID(inputString) {
  */
 export function generateFixedString(inputString, length = 40) {
   if (!inputString) {
-    TjLogger.warn('生成固定字符串输入为空, 使用默认值 1')
+    tjLogger.warn('生成固定字符串输入为空, 使用默认值 1')
     inputString = '1'
   }
   inputString = inputString.toString()
   if (length > 64) {
     length = 64
-    TjLogger.warn(
+    tjLogger.warn(
       `使用 ${inputString} 生成长度 ${length} 超过最大值, 已自动调整为64`
     )
   }
@@ -96,7 +96,7 @@ export function generateFixedString(inputString, length = 40) {
   // 截取前40个字符作为结果
   const fixedString = hash.substring(0, length)
 
-  TjLogger.debug(
+  tjLogger.debug(
     `使用 ${inputString} 生成长度为 ${length} 的固定字符串 ${fixedString}`
   )
   return fixedString
@@ -125,7 +125,7 @@ export function updateCardBg() {
       }
       return true
     } catch (err) {
-      TjLogger.warn('复制卡片默认背景图片错误:', err.message)
+      tjLogger.warn('复制卡片默认背景图片错误:', err.message)
       return false
     }
   }
@@ -140,7 +140,7 @@ export function updateCardBg() {
         rsp.status === 308
       ) {
         let location = rsp.headers.get('location')
-        TjLogger.debug(
+        tjLogger.debug(
           '更新卡片背景图片重定向:',
           rsp.status,
           rsp.statusText,
@@ -153,10 +153,10 @@ export function updateCardBg() {
     })
     .then((rsp) => {
       if (rsp.ok) {
-        TjLogger.debug('更新卡片背景图片响应:', rsp.status, rsp.statusText)
+        tjLogger.debug('更新卡片背景图片响应:', rsp.status, rsp.statusText)
         return rsp.arrayBuffer()
       } else {
-        TjLogger.warn(
+        tjLogger.warn(
           '更新卡片背景图片错误:',
           rsp.status,
           rsp.statusText,
@@ -171,7 +171,7 @@ export function updateCardBg() {
       return true
     })
     .catch((err) => {
-      TjLogger.warn('更新卡片背景图片错误:', err.message)
+      tjLogger.warn('更新卡片背景图片错误:', err.message)
       if (!fs.existsSync(cardBgPath))
         fs.copyFileSync(defaultCardBgPath, cardBgPath)
       return false
@@ -206,7 +206,7 @@ export async function sendMsgFriend(uin, msg) {
   // eslint-disable-next-line no-undef
   let friend = Bot.fl.get(uin)
   if (friend || config.getConfig().attemptSendNonFriend) {
-    TjLogger.debug(
+    tjLogger.debug(
       // eslint-disable-next-line no-undef
       `bot ${config.getConfig().botQQ || Bot.uin} 发送好友消息[${
         friend?.nickname
@@ -224,9 +224,9 @@ export async function sendMsgFriend(uin, msg) {
       .pickUser(uin)
       .sendMsg(msg)
       .catch((err) => {
-        TjLogger.error('发送好友消息错误:', err.message)
+        tjLogger.error('发送好友消息错误:', err.message)
       })
   } else {
-    TjLogger.warn(`${uin} 非好友, 无法推送消息`)
+    tjLogger.warn(`${uin} 非好友, 无法推送消息`)
   }
 }
