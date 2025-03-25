@@ -1,3 +1,10 @@
+## <small>0.1.2-rel (2025-03-25)</small>
+
+* fix: 留名就留名, 不要给id搞掉啊 ([025dd8b](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/025dd8b))
+* docs: 更新日志 ([669a1bd](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/669a1bd))
+
+
+
 ## <small>0.1.1-rel (2025-03-25)</small>
 
 * chore: bump version ([8b44a3a](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/8b44a3a))
