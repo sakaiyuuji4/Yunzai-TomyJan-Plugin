@@ -38,7 +38,13 @@ pnpm install
 
 外部依赖:
 
-`JMComic 下载` 功能依赖 [`hect0x7/JMComic-Crawler-Python`](https://github.com/hect0x7/JMComic-Crawler-Python), 请先前往此项目按照说明在系统全局安装此工具
+`JMComic 下载` 功能依赖 [`hect0x7/JMComic-Crawler-Python`](https://github.com/hect0x7/JMComic-Crawler-Python), 请先前往此项目按照说明在系统全局安装此工具: 
+
+```shell
+pip install jmcomic -U --break-system-packages
+```
+
+安装问题请自行解决, 不提供任何支持
 
 ### 更新插件
 
