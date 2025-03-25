@@ -32,7 +32,7 @@ export async function checkUpdateTask() {
       remoteVersion = await getRemoteVersion('TomyJan')
       if (!remoteVersion) {
         tjLogger.warn(`检查更新任务失败`)
-        await sendMsgFriend(cfg.masterQQ[0], `[库洛插件] 自动检查更新失败!`)
+        await sendMsgFriend(cfg.masterQQ[0], `[TJ插件] 自动检查更新失败!`)
         return false
       }
     }
@@ -43,7 +43,7 @@ export async function checkUpdateTask() {
     tjLogger.info(`检查更新任务: 解析版本信息失败`)
     await sendMsgFriend(
       cfg.masterQQ[0],
-      `[库洛插件] 自动检查更新\n解析版本信息失败\n请检查网络或前往项目地址检查版本信息\nhttps://github.com/TomyJan/Yunzai-TomyJan-Plugin`
+      `[TJ插件] 自动检查更新\n解析版本信息失败\n请检查网络或前往项目地址检查版本信息\nhttps://github.com/TomyJan/Yunzai-TomyJan-Plugin`
     )
     return false
   }
@@ -85,7 +85,7 @@ export async function checkUpdateTask() {
 
     await sendMsgFriend(
       cfg.masterQQ[0],
-      `[库洛插件] 自动检查更新\n发现新版: ${remoteVersion}\n本地版本: ${pluginVer}\n更新日志: https://github.com/TomyJan/Yunzai-TomyJan-Plugin/blob/master/CHANGELOG.md\n建议尽快更新~` +
+      `[TJ插件] 自动检查更新\n发现新版: ${remoteVersion}\n本地版本: ${pluginVer}\n更新日志: https://github.com/TomyJan/Yunzai-TomyJan-Plugin/blob/master/CHANGELOG.md\n建议尽快更新~` +
         (isCacheSucceed ? '' : '\n缓存新版本信息失败, 该信息可能会重复推送')
     )
   }

@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import YAML from 'yaml'
 import chokidar from 'chokidar'
-import kuroLogger from '../components/logger.js'
+import tjLogger from '../components/logger.js'
 import { dataPath } from '../data/system/pluginConstants.js'
 
 class dataHandler {
@@ -41,7 +41,7 @@ class dataHandler {
     const watcher = chokidar.watch(file)
 
     watcher.on('change', () => {
-      delete kuroLogger.info(`修改配置文件 ${name} , 已重载`)
+      delete tjLogger.info(`修改配置文件 ${name} , 已重载`)
     })
   }
 }
