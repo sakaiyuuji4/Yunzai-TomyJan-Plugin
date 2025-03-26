@@ -13,6 +13,21 @@ class httpServer {
     this.init()
   }
 
+  /**
+   * 发送错误响应
+   * @param {http.ServerResponse} res - 响应对象
+   * @param {number} statusCode - HTTP状态码
+   * @param {string} message - 错误信息
+   */
+  sendErrorResponse(res, statusCode, message) {
+    if (!res.headersSent) {
+      res.writeHead(statusCode, {
+        'Content-Type': 'text/plain; charset=utf-8'
+      })
+      res.end(message)
+    }
+  }
+
   init() {
     try {
       const serverConfig = config.getConfig().httpServer
@@ -38,12 +53,7 @@ class httpServer {
         // 设置请求超时
         req.setTimeout(30000, () => {
           tjLogger.warn(`HTTP服务器: 请求超时, 请求路径: ${req.url}`)
-          if (!res.headersSent) {
-            res.writeHead(408, {
-              'Content-Type': 'text/plain; charset=utf-8'
-            })
-            res.end('请求超时')
-          }
+          this.sendErrorResponse(res, 408, '请求超时')
         })
 
         // CDN 兼容
@@ -59,20 +69,14 @@ class httpServer {
           // 安全检查：确保请求的文件在根目录下
           if (!filePath.startsWith(this.rootDir)) {
             tjLogger.warn(`HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`)
-            res.writeHead(403, {
-              'Content-Type': 'text/plain; charset=utf-8'
-            })
-            res.end('访问被拒绝')
+            this.sendErrorResponse(res, 403, '访问被拒绝')
             return
           }
 
           // 检查文件是否存在
           if (!fs.existsSync(filePath)) {
             tjLogger.warn(`HTTP服务器: 文件未找到, 请求路径: ${req.url}, clientIp=${clientIp}`)
-            res.writeHead(404, {
-              'Content-Type': 'text/plain; charset=utf-8'
-            })
-            res.end('文件未找到')
+            this.sendErrorResponse(res, 404, '文件未找到')
             return
           }
 
@@ -80,10 +84,7 @@ class httpServer {
           fs.stat(filePath, (err, stats) => {
             if (err) {
               tjLogger.warn(`HTTP服务器: 获取文件状态失败, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
-              res.writeHead(500, {
-                'Content-Type': 'text/plain; charset=utf-8'
-              })
-              res.end('服务器错误')
+              this.sendErrorResponse(res, 500, '服务器错误')
               return
             }
 
@@ -115,10 +116,7 @@ class httpServer {
             // 错误处理
             fileStream.on('error', (err) => {
               tjLogger.warn(`HTTP服务器: 文件流错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
-              if (!res.headersSent) {
-                res.writeHead(500)
-                res.end('服务器错误')
-              }
+              this.sendErrorResponse(res, 500, '服务器错误')
             })
 
             // 请求中断处理
@@ -132,10 +130,7 @@ class httpServer {
           })
         } catch (err) {
           tjLogger.error(`HTTP服务器: 处理请求时发生错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
-          if (!res.headersSent) {
-            res.writeHead(500)
-            res.end('服务器内部错误')
-          }
+          this.sendErrorResponse(res, 500, '服务器内部错误')
         }
       })
 
