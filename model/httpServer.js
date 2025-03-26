@@ -107,11 +107,16 @@ class httpServer {
             res.writeHead(200, {
               'Content-Type': contentType,
               'Content-Length': stats.size,
-              'Accept-Ranges': 'bytes'
+              'Accept-Ranges': 'bytes',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive'
             })
 
             // 创建文件流
-            const fileStream = fs.createReadStream(filePath)
+            const fileStream = fs.createReadStream(filePath, {
+              highWaterMark: 64 * 1024, // 64KB chunks
+              autoClose: true
+            })
 
             // 错误处理
             fileStream.on('error', (err) => {
@@ -124,9 +129,21 @@ class httpServer {
               fileStream.destroy()
             })
 
+            // 响应中断处理
+            res.on('close', () => {
+              fileStream.destroy()
+            })
+
             // 开始流式传输
             tjLogger.info(`HTTP服务器: 开始流式传输文件, 请求路径: ${req.url}, clientIp=${clientIp}, contentType=${contentType}, size=${stats.size}bytes`)
-            fileStream.pipe(res)
+
+            // 使用管道传输，并处理错误
+            fileStream.pipe(res).on('error', (err) => {
+              tjLogger.warn(`HTTP服务器: 管道传输错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+              if (!res.headersSent) {
+                this.sendErrorResponse(res, 500, '服务器错误')
+              }
+            })
           })
         } catch (err) {
           tjLogger.error(`HTTP服务器: 处理请求时发生错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
