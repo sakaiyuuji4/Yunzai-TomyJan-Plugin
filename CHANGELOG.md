@@ -1,3 +1,39 @@
+## [0.1.4-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.3-rel...v0.1.4-rel) (2025-03-26)
+
+
+### Bug Fixes
+
+* 包含新版本缓存文件 ([facdac6](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/facdac651bc4b4bf5889338fdebca506a138da8e))
+* 错误的类名 ([7f79782](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/7f7978270a37c83ac8d57acf3aebc149c51e42d6))
+* 导入 http 服务器模块错误 ([53733db](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/53733db1e93c18abf11cce4d76950912503a7850))
+* 去除 JMComic id 可能开头的0 ([68cd211](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/68cd211436e10e8f155b13fec8508e72e27e2626))
+* 傻逼AI别瞎改我代码口牙 ([0cf4ad8](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/0cf4ad8bddf9b728c6493dff31b0c8488242943a))
+* 删除锅巴配置重复项 ([25bf5e9](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/25bf5e9f81fbe37f98a557be08615186a2c96fcd))
+* 私聊文件发送方法错误 ([4e4cf5a](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/4e4cf5a4d2d2efa401ca400b1cac986118a15bf5))
+* 优化 http 服务器流式传输代码 ([9760f42](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/9760f42052b5dd3b890d44a156228eb65277cdb9))
+* http 服务器报错的响应头 ([956af54](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/956af54e8380ecea34e79bef85b7df13ba87aad2))
+* http 服务器目录 ([03f49d1](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/03f49d1ea2ac267e8dd2328aea2244a2a629320f))
+* http服务器根目录 ([32b3194](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/32b3194007a2263ae669a7798cd0ca2cb8770474))
+
+
+### Features
+
+* 建立一个内置 http 服务器 ([626d088](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/626d088a7e09cc0952ea3d76a87ce7eed2c0f80b))
+* 文件上传失败后使用内置 http 服务器提供临时链接 ([c3255cd](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/c3255cd365c345f307ea152ac768192440665f84))
+* http 服务器相关设置锅巴兼容 ([98b3845](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/98b38455b2e148dda4f61403fb24a8d9cc8f9e40))
+
+
+### Performance Improvements
+
+* 帮助卡片背景完全填充 ([c1bafc0](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/c1bafc0b951c643620b6e74ae85e233c6f3890f7))
+* 部分锅巴提示文案 ([e26c5e3](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/e26c5e3de7ae6d17ab408c95ae38f9d5ba230263))
+* 仅在启动时测试 `JMComic` 命令可用性 ([2d62ea5](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/2d62ea5d3339ed5d8046e2ed94ba225b5a40f4f6))
+* 禁漫ID不存在时的提示 ([3fa8814](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/3fa8814c980157ae96cccae9f66f9de2d54d4998))
+* http 服务器报错处理代码 ([3a7b997](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/3a7b99799f2fcb5b77ddc0fdc22adc62a1eb4dd0))
+* http 服务器更多错误处理 ([157e3f9](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/157e3f98ddba56b0a65f202bcbede5e63e836757))
+
+
+
 ## [0.1.3-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.2-rel...v0.1.3-rel) (2025-03-25)
 
 
