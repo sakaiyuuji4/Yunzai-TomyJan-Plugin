@@ -1,5 +1,5 @@
 import config from '../components/config.js'
-import { _DataPath } from '../data/system/plugins/path.js'
+import { _DataPath } from '../data/system/pluginConstants.js'
 import http from 'http'
 import fs from 'fs'
 import path from 'path'
