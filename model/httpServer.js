@@ -9,108 +9,154 @@ import crypto from 'crypto'
 class httpServer {
   constructor() {
     this.rootDir = path.join(process.cwd(), 'data/httpServer/root')
+    this.server = null
     this.init()
   }
 
   init() {
-    const serverConfig = config.getConfig().httpServer
-    if (!serverConfig.enable) {
-      tjLogger.info('HTTP服务器未启用')
-      return
-    }
-
-    // 确保根目录存在
-    if (!fs.existsSync(this.rootDir)) {
-      fs.mkdirSync(this.rootDir, { recursive: true })
-    }
-
-    // 启动时清理过期的临时文件
-    this.cleanupExpiredTmpFiles()
-
-    const server = http.createServer((req, res) => {
-      // CDN 兼容
-      let clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-      if (clientIp.startsWith('::ffff:')) {
-        clientIp = clientIp.slice(7)
-      }
-      tjLogger.debug(`HTTP服务器: 收到请求, 请求路径: ${req.url}, clientIp=${clientIp}`)
-
-      let filePath = path.join(this.rootDir, req.url === '/' ? 'index.html' : req.url)
-
-      // 安全检查：确保请求的文件在根目录下
-      if (!filePath.startsWith(this.rootDir)) {
-        tjLogger.warn(`HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`)
-        res.writeHead(403)
-        res.end('访问被拒绝')
+    try {
+      const serverConfig = config.getConfig().httpServer
+      if (!serverConfig.enable) {
+        tjLogger.info('HTTP服务器未启用')
         return
       }
 
-      // 检查文件是否存在
-      if (!fs.existsSync(filePath)) {
-        tjLogger.warn(`HTTP服务器: 文件未找到, 请求路径: ${req.url}, clientIp=${clientIp}`)
-        res.writeHead(404)
-        res.end('文件未找到')
+      // 确保根目录存在
+      try {
+        if (!fs.existsSync(this.rootDir)) {
+          fs.mkdirSync(this.rootDir, { recursive: true })
+        }
+      } catch (err) {
+        tjLogger.error(`HTTP服务器: 创建根目录失败, error=${err.message}`)
         return
       }
 
-      // 获取文件状态
-      fs.stat(filePath, (err, stats) => {
-        if (err) {
-          tjLogger.warn(`HTTP服务器: 获取文件状态失败, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
-          res.writeHead(500)
-          res.end('服务器错误')
-          return
-        }
+      // 启动时清理过期的临时文件
+      this.cleanupExpiredTmpFiles()
 
-        // 根据文件扩展名设置 Content-Type
-        const ext = path.extname(filePath)
-        const contentTypes = {
-          '.html': 'text/html',
-          '.css': 'text/css',
-          '.js': 'application/javascript',
-          '.json': 'application/json',
-          '.png': 'image/png',
-          '.jpg': 'image/jpeg',
-          '.gif': 'image/gif',
-          '.svg': 'image/svg+xml',
-          '.pdf': 'application/pdf'
-        }
-        const contentType = contentTypes[ext] || 'application/octet-stream'
-
-        // 设置响应头
-        res.writeHead(200, {
-          'Content-Type': contentType,
-          'Content-Length': stats.size,
-          'Accept-Ranges': 'bytes'
-        })
-
-        // 创建文件流
-        const fileStream = fs.createReadStream(filePath)
-
-        // 错误处理
-        fileStream.on('error', (err) => {
-          tjLogger.warn(`HTTP服务器: 文件流错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+      this.server = http.createServer((req, res) => {
+        // 设置请求超时
+        req.setTimeout(30000, () => {
+          tjLogger.warn(`HTTP服务器: 请求超时, 请求路径: ${req.url}`)
           if (!res.headersSent) {
-            res.writeHead(500)
-            res.end('服务器错误')
+            res.writeHead(408)
+            res.end('请求超时')
           }
         })
 
-        // 请求中断处理
-        req.on('close', () => {
-          fileStream.destroy()
-        })
+        // CDN 兼容
+        let clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+        if (clientIp.startsWith('::ffff:')) {
+          clientIp = clientIp.slice(7)
+        }
+        tjLogger.debug(`HTTP服务器: 收到请求, 请求路径: ${req.url}, clientIp=${clientIp}`)
 
-        // 开始流式传输
-        tjLogger.info(`HTTP服务器: 开始流式传输文件, 请求路径: ${req.url}, clientIp=${clientIp}, contentType=${contentType}, size=${stats.size}bytes`)
-        fileStream.pipe(res)
+        try {
+          let filePath = path.join(this.rootDir, req.url === '/' ? 'index.html' : req.url)
+
+          // 安全检查：确保请求的文件在根目录下
+          if (!filePath.startsWith(this.rootDir)) {
+            tjLogger.warn(`HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`)
+            res.writeHead(403)
+            res.end('访问被拒绝')
+            return
+          }
+
+          // 检查文件是否存在
+          if (!fs.existsSync(filePath)) {
+            tjLogger.warn(`HTTP服务器: 文件未找到, 请求路径: ${req.url}, clientIp=${clientIp}`)
+            res.writeHead(404)
+            res.end('文件未找到')
+            return
+          }
+
+          // 获取文件状态
+          fs.stat(filePath, (err, stats) => {
+            if (err) {
+              tjLogger.warn(`HTTP服务器: 获取文件状态失败, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+              res.writeHead(500)
+              res.end('服务器错误')
+              return
+            }
+
+            // 根据文件扩展名设置 Content-Type
+            const ext = path.extname(filePath)
+            const contentTypes = {
+              '.html': 'text/html',
+              '.css': 'text/css',
+              '.js': 'application/javascript',
+              '.json': 'application/json',
+              '.png': 'image/png',
+              '.jpg': 'image/jpeg',
+              '.gif': 'image/gif',
+              '.svg': 'image/svg+xml',
+              '.pdf': 'application/pdf'
+            }
+            const contentType = contentTypes[ext] || 'application/octet-stream'
+
+            // 设置响应头
+            res.writeHead(200, {
+              'Content-Type': contentType,
+              'Content-Length': stats.size,
+              'Accept-Ranges': 'bytes'
+            })
+
+            // 创建文件流
+            const fileStream = fs.createReadStream(filePath)
+
+            // 错误处理
+            fileStream.on('error', (err) => {
+              tjLogger.warn(`HTTP服务器: 文件流错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+              if (!res.headersSent) {
+                res.writeHead(500)
+                res.end('服务器错误')
+              }
+            })
+
+            // 请求中断处理
+            req.on('close', () => {
+              fileStream.destroy()
+            })
+
+            // 开始流式传输
+            tjLogger.info(`HTTP服务器: 开始流式传输文件, 请求路径: ${req.url}, clientIp=${clientIp}, contentType=${contentType}, size=${stats.size}bytes`)
+            fileStream.pipe(res)
+          })
+        } catch (err) {
+          tjLogger.error(`HTTP服务器: 处理请求时发生错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+          if (!res.headersSent) {
+            res.writeHead(500)
+            res.end('服务器内部错误')
+          }
+        }
       })
-    })
 
-    server.listen(serverConfig.listenPort, () => {
-      tjLogger.info(`HTTP服务器已启动，监听端口: ${serverConfig.listenPort}`)
-      tjLogger.info(`访问地址: ${serverConfig.accessUrl}`)
-    })
+      // 添加服务器错误处理
+      this.server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          tjLogger.error(`HTTP服务器: 端口 ${serverConfig.listenPort} 已被占用, error=${err.message}`)
+        } else {
+          tjLogger.error(`HTTP服务器: 发生错误, error=${err.message}`)
+        }
+      })
+
+      // 添加未捕获异常处理
+      this.server.on('uncaughtException', (err) => {
+        tjLogger.error(`HTTP服务器: 未捕获的异常, error=${err.message}`)
+      })
+
+      // 添加未处理的Promise拒绝处理
+      this.server.on('unhandledRejection', (reason, promise) => {
+        tjLogger.error(`HTTP服务器: 未处理的Promise拒绝, reason=${reason}, promise=${promise.toString()}`)
+      })
+
+      this.server.listen(serverConfig.listenPort, () => {
+        tjLogger.info(`HTTP服务器已启动，监听端口: ${serverConfig.listenPort}`)
+        tjLogger.info(`访问地址: ${serverConfig.accessUrl}`)
+      })
+    } catch (err) {
+      tjLogger.error(`HTTP服务器: 初始化失败, error=${err.message}`)
+    }
   }
 
   cleanupExpiredTmpFiles() {
