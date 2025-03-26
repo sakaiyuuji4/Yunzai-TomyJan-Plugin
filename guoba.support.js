@@ -101,11 +101,6 @@ export function supportGuoba() {
           component: 'Input',
         },
         {
-          field: 'httpServer.accessUrl',
-          label: '访问 URL',
-          component: 'Input',
-        },
-        {
           component: 'Divider',
           label: '其他设置',
         },
