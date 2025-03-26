@@ -77,6 +77,36 @@ export function supportGuoba() {
         },
         {
           component: 'Divider',
+          label: 'HTTP 服务器设置',
+        },
+        {
+          field: 'httpServer.enable',
+          label: '启用',
+          helpMessage: '启用 HTTP 服务器, 默认关闭',
+          bottomHelpMessage: '启用 HTTP 服务器, 默认关闭',
+          component: 'Switch',
+        },
+        {
+          field: 'httpServer.listenPort',
+          label: '监听端口',
+          helpMessage: 'HTTP 服务器监听端口, 默认 5252',
+          bottomHelpMessage: 'HTTP 服务器监听端口, 默认 5252',
+          component: 'Input',
+        },
+        {
+          field: 'httpServer.accessUrl',
+          label: '访问 URL',
+          helpMessage: 'HTTP 服务器访问 URL, 默认 http://127.0.0.1:5252/',
+          bottomHelpMessage: 'HTTP 服务器访问 URL, 默认 http://127.0.0.1:5252/',
+          component: 'Input',
+        },
+        {
+          field: 'httpServer.accessUrl',
+          label: '访问 URL',
+          component: 'Input',
+        },
+        {
+          component: 'Divider',
           label: '其他设置',
         },
         {
