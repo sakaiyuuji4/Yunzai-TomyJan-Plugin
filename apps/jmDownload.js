@@ -5,7 +5,7 @@ import { _DataPath } from '../data/system/pluginConstants.js'
 import common from '../../../lib/common/common.js'
 import fs from 'fs'
 
-export class pluginHelpApp extends plugin {
+export class jmDownloadApp extends plugin {
   constructor() {
     super({
       /** 功能名称 */
