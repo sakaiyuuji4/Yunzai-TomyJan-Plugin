@@ -44,6 +44,9 @@ export class jmDownloadApp extends plugin {
       return
     }
 
+    // 去除 id 可能存在的开头的 0
+    id = parseInt(id).toString()
+
     tjLogger.debug(`准备下载 JMComic ID: ${id}, qq=${this.e.user_id}`)
     let msg = `准备下载 JMComic ID: ${id}`
     let jmPrepareMsg = await this.reply(msg, true)
