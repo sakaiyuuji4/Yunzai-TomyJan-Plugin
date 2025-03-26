@@ -147,7 +147,7 @@ export class jmDownloadApp extends plugin {
           this.e.friend.recallMsg(downloadSuccessMsg.message_id)
           let ret
           try {
-            ret = await this.e.friend.fs.upload(pdfPath)
+            ret = await this.e.friend.sendFile(pdfPath)
           } catch (e) {
             tjLogger.error(`发送文件失败: ${e.message}`)
             ret = null
