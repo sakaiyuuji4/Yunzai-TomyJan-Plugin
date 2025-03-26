@@ -82,7 +82,7 @@ export function supportGuoba() {
         {
           field: 'httpServer.enable',
           label: '启用',
-          helpMessage: '启用 HTTP 服务器, 默认关闭',
+          helpMessage: '请确保配置正确, 插件只会依照此值决定是否使用内置服务器, 不会做更多判断',
           bottomHelpMessage: '启用 HTTP 服务器, 默认关闭',
           component: 'Switch',
         },
