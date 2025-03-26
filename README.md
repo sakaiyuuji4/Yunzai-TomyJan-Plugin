@@ -75,6 +75,11 @@ git -C ./plugins/Yunzai-TomyJan-Plugin/ pull
     "logLevel": "info", // 日志等级, 可选值: trace, debug, info, warn, error, fatal
     "saveToFile": false // 是否保存日志到文件
   },
+  "httpServer": { // 插件内置 HTTP 服务器配置
+    "enable": false, // 是否启用 HTTP 服务器, 默认关闭, 建议手动启用并修改相关配置
+    "listenPort": 5252, // 监听端口, 默认 5252
+    "accessUrl": "http://127.0.0.1:5252/" // 访问 URL, 默认 http://127.0.0.1:5252/
+  },
   "useRandomBgInCard": true, // 卡片是否使用随机背景图
   "attemptSendNonFriend": true, // 即使非好友也尝试推送消息
   "botQQ": 0 // 机器人 QQ 号, 使用第三方适配器或者其他多账号框架时可能需要配置
