@@ -1,3 +1,12 @@
+## [0.1.5-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.4-rel...v0.1.5-rel) (2025-03-26)
+
+
+### Performance Improvements
+
+* 没用的东西你怎么还在 ([e3c0487](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/e3c048738d8b9d28068114969f9eb77b6269b1c6))
+
+
+
 ## [0.1.4-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.3-rel...v0.1.4-rel) (2025-03-26)
 
 
