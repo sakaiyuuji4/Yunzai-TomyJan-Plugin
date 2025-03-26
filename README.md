@@ -62,7 +62,7 @@ git -C ./plugins/Yunzai-TomyJan-Plugin/ pull
 
 `./config` 为插件配置目录
 
-`./data` 为插件用户数据目录. 其中, `./data/system` 为插件系统数据, `./data/JMComic` 为 `JMComic` 功能的系统和缓存数据, 不用备份
+`./data` 为插件用户数据目录. 其中, `./data/system` 为插件系统数据, `./data/JMComic` 为 `JMComic` 功能的系统和缓存数据, `./data/httpServer` 为 插件内置服务器的系统和缓存数据, 不用备份
 
 ### 插件配置
 
@@ -87,7 +87,7 @@ git -C ./plugins/Yunzai-TomyJan-Plugin/ pull
 
 ### JMComic 下载
 
-- `#jm 1112863` 下载漫画
+- `#jm 1112863` 下载 JMComic 漫画并转换为 PDF 发送, 发送失败可选临时上传到插件内置 HTTP 服务器供用户下载
 
 ## 关于
 

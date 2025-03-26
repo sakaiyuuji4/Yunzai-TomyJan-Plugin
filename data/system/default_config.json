@@ -3,6 +3,11 @@
     "logLevel": "info",
     "saveToFile": false
   },
+  "httpServer": {
+    "enable": false,
+    "listenPort": 5252,
+    "accessUrl": "http://127.0.0.1:5252/"
+  },
   "useRandomBgInCard": true,
   "attemptSendNonFriend": true,
   "botQQ": 0
