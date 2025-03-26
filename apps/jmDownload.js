@@ -24,14 +24,14 @@ export class jmDownloadApp extends plugin {
           fnc: 'jmDownload',
         },
       ],
-    });
+    })
   }
 
-  static commandExists = false;
+  static commandExists = false
 
   /** 插件初始化时执行 */
   static async init() {
-    await checkCommand();
+    await checkCommand()
   }
 
   async jmDownload() {
@@ -87,7 +87,8 @@ export class jmDownloadApp extends plugin {
         /MissingAlbumPhotoException\('([^']+)/
       )
       if (match) {
-        if(match[1]?.includes('请求的本子不存在')) match[1] = '此 ID 不存在或登录可见'
+        if (match[1]?.includes('请求的本子不存在'))
+          match[1] = '此 ID 不存在或登录可见'
         this.reply(
           `下载失败, 错误信息: \n${match[1].replace(/\\n/g, '\n').trim()}`,
           true
@@ -141,7 +142,10 @@ export class jmDownloadApp extends plugin {
             tjLogger.error(`发送文件失败: ${e.message}`)
             ret = null
             let msg = `文件发送失败, 错误信息: \n${e.message}`
-            if (config.getConfig().httpServer.enable && e.message != '群文件空间不足') {
+            if (
+              config.getConfig().httpServer.enable &&
+              e.message != '群文件空间不足'
+            ) {
               msg += `\n将尝试上传到内置服务器...`
               let msgId = await this.reply(msg, true)
               let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
@@ -223,7 +227,9 @@ async function checkCommand() {
   if (!commandResult.output) {
     // 命令不存在
     jmDownloadApp.commandExists = false
-    tjLogger.error('JMComic 命令不存在, JM 下载功能将不可用, 请先按照教程安装 JMComic 并重启 Bot')
+    tjLogger.error(
+      'JMComic 命令不存在, JM 下载功能将不可用, 请先按照教程安装 JMComic 并重启 Bot'
+    )
   } else {
     // 命令存在
     jmDownloadApp.commandExists = true
@@ -232,4 +238,4 @@ async function checkCommand() {
 }
 
 // 在插件加载时执行初始化
-jmDownloadApp.init();
+jmDownloadApp.init()
