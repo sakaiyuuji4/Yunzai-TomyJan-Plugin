@@ -22,7 +22,7 @@ class httpServer {
   sendErrorResponse(res, statusCode, message) {
     if (!res.headersSent) {
       res.writeHead(statusCode, {
-        'Content-Type': 'text/plain; charset=utf-8'
+        'Content-Type': 'text/plain; charset=utf-8',
       })
       res.end(message)
     }
@@ -57,25 +57,35 @@ class httpServer {
         })
 
         // CDN 兼容
-        let clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+        let clientIp =
+          req.headers['x-forwarded-for'] || req.socket.remoteAddress
         if (clientIp.startsWith('::ffff:')) {
           clientIp = clientIp.slice(7)
         }
-        tjLogger.debug(`HTTP服务器: 收到请求, 请求路径: ${req.url}, clientIp=${clientIp}`)
+        tjLogger.debug(
+          `HTTP服务器: 收到请求, 请求路径: ${req.url}, clientIp=${clientIp}`
+        )
 
         try {
-          let filePath = path.join(this.rootDir, req.url === '/' ? 'index.html' : req.url)
+          let filePath = path.join(
+            this.rootDir,
+            req.url === '/' ? 'index.html' : req.url
+          )
 
           // 安全检查：确保请求的文件在根目录下
           if (!filePath.startsWith(this.rootDir)) {
-            tjLogger.warn(`HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`)
+            tjLogger.warn(
+              `HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`
+            )
             this.sendErrorResponse(res, 403, '访问被拒绝')
             return
           }
 
           // 检查文件是否存在
           if (!fs.existsSync(filePath)) {
-            tjLogger.warn(`HTTP服务器: 文件未找到, 请求路径: ${req.url}, clientIp=${clientIp}`)
+            tjLogger.warn(
+              `HTTP服务器: 文件未找到, 请求路径: ${req.url}, clientIp=${clientIp}`
+            )
             this.sendErrorResponse(res, 404, '文件未找到')
             return
           }
@@ -83,7 +93,9 @@ class httpServer {
           // 获取文件状态
           fs.stat(filePath, (err, stats) => {
             if (err) {
-              tjLogger.warn(`HTTP服务器: 获取文件状态失败, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+              tjLogger.warn(
+                `HTTP服务器: 获取文件状态失败, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`
+              )
               this.sendErrorResponse(res, 500, '服务器错误')
               return
             }
@@ -99,7 +111,7 @@ class httpServer {
               '.jpg': 'image/jpeg',
               '.gif': 'image/gif',
               '.svg': 'image/svg+xml',
-              '.pdf': 'application/pdf'
+              '.pdf': 'application/pdf',
             }
             const contentType = contentTypes[ext] || 'application/octet-stream'
 
@@ -109,18 +121,20 @@ class httpServer {
               'Content-Length': stats.size,
               'Accept-Ranges': 'bytes',
               'Cache-Control': 'no-cache',
-              'Connection': 'keep-alive'
+              Connection: 'keep-alive',
             })
 
             // 创建文件流
             const fileStream = fs.createReadStream(filePath, {
               highWaterMark: 64 * 1024, // 64KB chunks
-              autoClose: true
+              autoClose: true,
             })
 
             // 错误处理
             fileStream.on('error', (err) => {
-              tjLogger.warn(`HTTP服务器: 文件流错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+              tjLogger.warn(
+                `HTTP服务器: 文件流错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`
+              )
               this.sendErrorResponse(res, 500, '服务器错误')
             })
 
@@ -135,18 +149,24 @@ class httpServer {
             })
 
             // 开始流式传输
-            tjLogger.info(`HTTP服务器: 开始流式传输文件, 请求路径: ${req.url}, clientIp=${clientIp}, contentType=${contentType}, size=${stats.size}bytes`)
+            tjLogger.info(
+              `HTTP服务器: 开始流式传输文件, 请求路径: ${req.url}, clientIp=${clientIp}, contentType=${contentType}, size=${stats.size}bytes`
+            )
 
             // 使用管道传输，并处理错误
             fileStream.pipe(res).on('error', (err) => {
-              tjLogger.warn(`HTTP服务器: 管道传输错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+              tjLogger.warn(
+                `HTTP服务器: 管道传输错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`
+              )
               if (!res.headersSent) {
                 this.sendErrorResponse(res, 500, '服务器错误')
               }
             })
           })
         } catch (err) {
-          tjLogger.error(`HTTP服务器: 处理请求时发生错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
+          tjLogger.error(
+            `HTTP服务器: 处理请求时发生错误, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`
+          )
           this.sendErrorResponse(res, 500, '服务器内部错误')
         }
       })
@@ -154,7 +174,9 @@ class httpServer {
       // 添加服务器错误处理
       this.server.on('error', (err) => {
         if (err.code === 'EADDRINUSE') {
-          tjLogger.error(`HTTP服务器: 端口 ${serverConfig.listenPort} 已被占用, error=${err.message}`)
+          tjLogger.error(
+            `HTTP服务器: 端口 ${serverConfig.listenPort} 已被占用, error=${err.message}`
+          )
         } else {
           tjLogger.error(`HTTP服务器: 发生错误, error=${err.message}`)
         }
@@ -167,7 +189,9 @@ class httpServer {
 
       // 添加未处理的Promise拒绝处理
       this.server.on('unhandledRejection', (reason, promise) => {
-        tjLogger.error(`HTTP服务器: 未处理的Promise拒绝, reason=${reason}, promise=${promise.toString()}`)
+        tjLogger.error(
+          `HTTP服务器: 未处理的Promise拒绝, reason=${reason}, promise=${promise.toString()}`
+        )
       })
 
       this.server.listen(serverConfig.listenPort, () => {
@@ -198,7 +222,9 @@ class httpServer {
               fs.rmSync(dirPath, { recursive: true, force: true })
               tjLogger.debug(`HTTP服务器: 清理过期临时目录, 路径: ${dirPath}`)
             } catch (err) {
-              tjLogger.warn(`HTTP服务器: 清理过期临时目录失败, 路径: ${dirPath}, error=${err.message}`)
+              tjLogger.warn(
+                `HTTP服务器: 清理过期临时目录失败, 路径: ${dirPath}, error=${err.message}`
+              )
             }
           } else {
             // 文件未过期，重新设置延迟删除
@@ -206,12 +232,20 @@ class httpServer {
             setTimeout(() => {
               try {
                 fs.rmSync(dirPath, { recursive: true, force: true })
-                tjLogger.debug(`HTTP服务器: 临时文件已过期删除, 路径: ${dirPath}`)
+                tjLogger.debug(
+                  `HTTP服务器: 临时文件已过期删除, 路径: ${dirPath}`
+                )
               } catch (err) {
-                tjLogger.warn(`HTTP服务器: 删除过期临时文件失败, 路径: ${dirPath}, error=${err.message}`)
+                tjLogger.warn(
+                  `HTTP服务器: 删除过期临时文件失败, 路径: ${dirPath}, error=${err.message}`
+                )
               }
             }, delay)
-            tjLogger.debug(`HTTP服务器: 重新设置临时文件延迟删除, 路径: ${dirPath}, 剩余时间: ${Math.floor(delay/1000)}秒`)
+            tjLogger.debug(
+              `HTTP服务器: 重新设置临时文件延迟删除, 路径: ${dirPath}, 剩余时间: ${Math.floor(
+                delay / 1000
+              )}秒`
+            )
           }
         }
       }
@@ -244,7 +278,7 @@ class httpServer {
       fs.copyFileSync(filePath, targetPath)
 
       // 创建过期时间标记文件
-      const expireTime = Date.now() + (expireSeconds * 1000)
+      const expireTime = Date.now() + expireSeconds * 1000
       fs.writeFileSync(path.join(tmpDir, '.expire'), expireTime.toString())
 
       // 设置过期删除
@@ -253,7 +287,9 @@ class httpServer {
           fs.rmSync(tmpDir, { recursive: true, force: true })
           tjLogger.debug(`HTTP服务器: 临时文件已过期删除, 路径: ${tmpDir}`)
         } catch (err) {
-          tjLogger.warn(`HTTP服务器: 删除过期临时文件失败, 路径: ${tmpDir}, error=${err.message}`)
+          tjLogger.warn(
+            `HTTP服务器: 删除过期临时文件失败, 路径: ${tmpDir}, error=${err.message}`
+          )
         }
       }, expireSeconds * 1000)
 
@@ -261,10 +297,14 @@ class httpServer {
       const baseUrl = config.getConfig().httpServer.accessUrl
       const url = `${baseUrl}tmp/${randomDir}/${fileName}`
 
-      tjLogger.info(`HTTP服务器: 创建临时文件链接, 原始文件: ${filePath}, 临时URL: ${url}, 过期时间: ${expireSeconds}秒`)
+      tjLogger.info(
+        `HTTP服务器: 创建临时文件链接, 原始文件: ${filePath}, 临时URL: ${url}, 过期时间: ${expireSeconds}秒`
+      )
       return url
     } catch (err) {
-      tjLogger.warn(`HTTP服务器: 创建临时文件链接失败, 文件: ${filePath}, error=${err.message}`)
+      tjLogger.warn(
+        `HTTP服务器: 创建临时文件链接失败, 文件: ${filePath}, error=${err.message}`
+      )
       return null
     }
   }
