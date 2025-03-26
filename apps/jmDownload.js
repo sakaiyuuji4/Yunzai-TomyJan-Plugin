@@ -22,7 +22,14 @@ export class jmDownloadApp extends plugin {
           fnc: 'jmDownload',
         },
       ],
-    })
+    });
+  }
+
+  static commandExists = false;
+
+  /** 插件初始化时执行 */
+  static async init() {
+    await checkCommand();
   }
 
   async jmDownload() {
@@ -40,21 +47,19 @@ export class jmDownloadApp extends plugin {
     tjLogger.debug(`准备下载 JMComic ID: ${id}, qq=${this.e.user_id}`)
     let msg = `准备下载 JMComic ID: ${id}`
     let jmPrepareMsg = await this.reply(msg, true)
-    // 检查 jmcomic 命令是否存在
-    // TODO: 命令的测试或许可以挪到插件启动时候
-    let command = 'jmcomic'
+    let command = ''
     let commandResult = {}
-    commandResult = await runCommand(command)
-    tjLogger.debug(`jmcomic 命令测试结果: ${JSON.stringify(commandResult)}`)
-    if (!commandResult.output) {
+    if (!jmDownloadApp.commandExists) {
       // 命令不存在
-      this.reply('JMComic 命令不存在, 请先按照教程安装 JMComic', true)
+      tjLogger.info('JMComic 命令不存在, 任务终止')
+      this.reply('JMComic 不存在, 请先安装', true)
       if (this.e.group) this.e.group.recallMsg(jmPrepareMsg.message_id)
       if (this.e.friend) this.e.friend.recallMsg(jmPrepareMsg.message_id)
       return
     }
 
     // 开始下载
+    tjLogger.debug(`开始下载 JMComic ID: ${id}`)
     command = `jmcomic ${id} --option="${_DataPath}/JMComic/option.yml"`
     commandResult = await runCommand(command)
     tjLogger.debug(`jmcomic 下载结果: ${JSON.stringify(commandResult)}`)
@@ -176,3 +181,24 @@ export class jmDownloadApp extends plugin {
     }
   }
 }
+
+async function checkCommand() {
+  // 启动时检查命令是否存在
+  tjLogger.debug('开始检查 JMComic 命令是否存在')
+  let command = 'jmcomic'
+  let commandResult = {}
+  commandResult = await runCommand(command)
+  tjLogger.debug(`jmcomic 命令测试结果: ${JSON.stringify(commandResult)}`)
+  if (!commandResult.output) {
+    // 命令不存在
+    jmDownloadApp.commandExists = false
+    tjLogger.error('JMComic 命令不存在, JM 下载功能将不可用, 请先按照教程安装 JMComic 并重启 Bot')
+  } else {
+    // 命令存在
+    jmDownloadApp.commandExists = true
+    tjLogger.info('JMComic 命令存在, JM 下载功能可用')
+  }
+}
+
+// 在插件加载时执行初始化
+jmDownloadApp.init();

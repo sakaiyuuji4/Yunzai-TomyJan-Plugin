@@ -38,7 +38,7 @@ pnpm install
 
 外部依赖:
 
-`JMComic 下载` 功能依赖 [`hect0x7/JMComic-Crawler-Python`](https://github.com/hect0x7/JMComic-Crawler-Python), 请先前往此项目按照说明在系统全局安装此工具: 
+`JMComic 下载` 功能依赖 [`hect0x7/JMComic-Crawler-Python`](https://github.com/hect0x7/JMComic-Crawler-Python), 请先前往此项目按照说明在系统全局安装此工具:
 
 ```shell
 pip install jmcomic -U --break-system-packages
@@ -87,7 +87,7 @@ git -C ./plugins/Yunzai-TomyJan-Plugin/ pull
 
 ### JMComic 下载
 
-- [x] `#jm 1112863` 下载漫画
+- `#jm 1112863` 下载漫画
 
 ## 关于
 
