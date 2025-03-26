@@ -1,6 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import tjLogger from '../components/logger.js'
+import config from '../components/config.js'
 import { runCommand, imagesToPDF } from '../model/utils.js'
+import { httpServer } from '../model/httpServer.js'
 import { _DataPath } from '../data/system/pluginConstants.js'
 import common from '../../../lib/common/common.js'
 import fs from 'fs'
@@ -138,7 +140,19 @@ export class jmDownloadApp extends plugin {
               e.message = '群文件空间不足'
             tjLogger.error(`发送文件失败: ${e.message}`)
             ret = null
-            this.reply(`文件发送失败, 错误信息: ${e.message}`, true)
+            let msg = `文件发送失败, 错误信息: \n${e.message}`
+            if (config.getConfig().httpServer.enable && e.message != '群文件空间不足') {
+              msg += `\n将尝试上传到内置服务器...`
+              let msgId = await this.reply(msg, true)
+              let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
+              if (tmpFileUrl) {
+                msg = `点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+                this.e.group.recallMsg(msgId.message_id)
+                this.reply(msg, true)
+              }
+            } else {
+              this.reply(msg, true)
+            }
           }
           tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
           fs.unlinkSync(pdfPath)
@@ -155,7 +169,20 @@ export class jmDownloadApp extends plugin {
           } catch (e) {
             tjLogger.error(`发送文件失败: ${e.message}`)
             ret = null
-            this.reply(`文件发送失败, 错误信息: ${e.message}`, true)
+            // this.reply(`文件发送失败, 错误信息: ${e.message}`, true)
+            let msg = `文件发送失败, 错误信息: \n${e.message}`
+            if (config.getConfig().httpServer.enable) {
+              msg += `\n将尝试上传到内置服务器...`
+              let msgId = await this.reply(msg, true)
+              let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
+              if (tmpFileUrl) {
+                msg = `点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+                this.e.friend.recallMsg(msgId.message_id)
+                this.reply(msg, true)
+              }
+            } else {
+              this.reply(msg, true)
+            }
           }
           tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
           fs.unlinkSync(pdfPath)

@@ -200,6 +200,12 @@ class httpServer {
     }
   }
 
+  /**
+   * 创建临时文件链接
+   * @param {string} filePath - 文件路径
+   * @param {number} expireSeconds - 过期时间（秒）
+   * @returns {string} - 临时文件链接
+   */
   createTmpFileUrl(filePath, expireSeconds) {
     try {
       // 生成随机目录名
