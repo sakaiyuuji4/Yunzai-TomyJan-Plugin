@@ -82,6 +82,7 @@ export class jmDownloadApp extends plugin {
         /MissingAlbumPhotoException\('([^']+)/
       )
       if (match) {
+        if(match[1]?.includes('请求的本子不存在')) match[1] = '此 ID 不存在或登录可见'
         this.reply(
           `下载失败, 错误信息: \n${match[1].replace(/\\n/g, '\n').trim()}`,
           true
