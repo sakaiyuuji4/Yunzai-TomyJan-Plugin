@@ -39,7 +39,9 @@ class httpServer {
         req.setTimeout(30000, () => {
           tjLogger.warn(`HTTP服务器: 请求超时, 请求路径: ${req.url}`)
           if (!res.headersSent) {
-            res.writeHead(408)
+            res.writeHead(408, {
+              'Content-Type': 'text/plain; charset=utf-8'
+            })
             res.end('请求超时')
           }
         })
@@ -57,7 +59,9 @@ class httpServer {
           // 安全检查：确保请求的文件在根目录下
           if (!filePath.startsWith(this.rootDir)) {
             tjLogger.warn(`HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`)
-            res.writeHead(403)
+            res.writeHead(403, {
+              'Content-Type': 'text/plain; charset=utf-8'
+            })
             res.end('访问被拒绝')
             return
           }
@@ -65,7 +69,9 @@ class httpServer {
           // 检查文件是否存在
           if (!fs.existsSync(filePath)) {
             tjLogger.warn(`HTTP服务器: 文件未找到, 请求路径: ${req.url}, clientIp=${clientIp}`)
-            res.writeHead(404)
+            res.writeHead(404, {
+              'Content-Type': 'text/plain; charset=utf-8'
+            })
             res.end('文件未找到')
             return
           }
@@ -74,7 +80,9 @@ class httpServer {
           fs.stat(filePath, (err, stats) => {
             if (err) {
               tjLogger.warn(`HTTP服务器: 获取文件状态失败, 请求路径: ${req.url}, clientIp=${clientIp}, error=${err.message}`)
-              res.writeHead(500)
+              res.writeHead(500, {
+                'Content-Type': 'text/plain; charset=utf-8'
+              })
               res.end('服务器错误')
               return
             }
