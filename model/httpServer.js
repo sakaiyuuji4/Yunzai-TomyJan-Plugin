@@ -1,14 +1,14 @@
 import config from '../components/config.js'
+import { _DataPath } from '../data/system/plugins/path.js'
 import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import tjLogger from '../components/logger.js'
-import process from 'process'
 import crypto from 'crypto'
 
 class httpServer {
   constructor() {
-    this.rootDir = path.join(process.cwd(), 'data/httpServer/root')
+    this.rootDir = _DataPath + '/httpServer/root'
     this.server = null
     this.init()
   }
