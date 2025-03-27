@@ -1,7 +1,11 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import tjLogger from '../components/logger.js'
 import config from '../components/config.js'
-import { runCommand, imagesToPDF, getFileSizeInHumanReadableFormat } from '../model/utils.js'
+import {
+  runCommand,
+  imagesToPDF,
+  getFileSizeInHumanReadableFormat,
+} from '../model/utils.js'
 import httpServer from '../model/httpServer.js'
 import { _DataPath } from '../data/system/pluginConstants.js'
 import common from '../../../lib/common/common.js'
