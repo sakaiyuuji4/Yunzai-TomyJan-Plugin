@@ -195,7 +195,9 @@ class httpServer {
       })
 
       this.server.listen(serverConfig.listenPort, () => {
-        tjLogger.info(`HTTP服务器已启动，监听端口: ${serverConfig.listenPort}, 访问地址: ${serverConfig.accessUrl}`)
+        tjLogger.info(
+          `HTTP服务器已启动，监听端口: ${serverConfig.listenPort}, 访问地址: ${serverConfig.accessUrl}`
+        )
       })
     } catch (err) {
       tjLogger.error(`HTTP服务器: 初始化失败, error=${err.message}`)
