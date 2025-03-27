@@ -306,3 +306,21 @@ export async function imagesToPDF(inputDir, outputPath, pdfTitle) {
 
   return outputPath
 }
+
+/**
+ * 计算传入的文件大小, 转换为人类易读的格式
+ * @param {string} filePath 文件路径
+ * @returns {string} 人类易读的文件大小
+ */
+export function getFileSizeInHumanReadableFormat(filePath) {
+  const stats = fs.statSync(filePath)
+  const sizeInBytes = stats.size
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let index = 0
+  let size = sizeInBytes
+  while (size >= 1024 && index < units.length - 1) {
+    size /= 1024
+    index++
+  }
+  return `${size.toFixed(2)}${units[index]}`
+}

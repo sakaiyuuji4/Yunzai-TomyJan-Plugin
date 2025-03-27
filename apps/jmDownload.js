@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import tjLogger from '../components/logger.js'
 import config from '../components/config.js'
-import { runCommand, imagesToPDF } from '../model/utils.js'
+import { runCommand, imagesToPDF, getFileSizeInHumanReadableFormat } from '../model/utils.js'
 import httpServer from '../model/httpServer.js'
 import { _DataPath } from '../data/system/pluginConstants.js'
 import common from '../../../lib/common/common.js'
@@ -159,6 +159,8 @@ export class jmDownloadApp extends plugin {
       )
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
+        // 计算 PDF 文件大小
+        const pdfSize = getFileSizeInHumanReadableFormat(pdfPath)
         // 转换成功删掉下载的图片
         tjLogger.debug(`清理 JMComic 临时文件: ${downloadPath}`)
         fs.rm(downloadPath, { recursive: true, force: true }, (err) => {
@@ -168,7 +170,7 @@ export class jmDownloadApp extends plugin {
             )
         })
         let prepareSendFileMsg = await this.reply(
-          '转 PDF 成功, 准备发送...',
+          `转 PDF 成功, 文件大小 ${pdfSize}, 准备发送...`,
           true
         )
         // 发送 PDF
@@ -191,7 +193,7 @@ export class jmDownloadApp extends plugin {
               let msgId = await this.reply(msg, true)
               let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
               if (tmpFileUrl) {
-                msg = `点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+                msg = `文件大小: ${pdfSize}\n点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
                 this.e.group.recallMsg(msgId.message_id)
                 this.reply(msg, true)
               }
