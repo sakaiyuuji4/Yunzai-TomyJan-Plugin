@@ -43,9 +43,10 @@ export class jmDownloadApp extends plugin {
           const dirPath = `${this.downloadPathPrefix}/${dir}`
           if (fs.statSync(dirPath).isDirectory()) {
             fs.rmSync(dirPath, { recursive: true, force: true })
+            tjLogger.info(`已清理 JMComic 临时文件: ${dirPath}`)
           }
         }
-        tjLogger.info('已清理下载临时文件目录')
+        tjLogger.debug('完成清理 JMComic 临时下载文件')
       }
       // 清理转换目录内的所有PDF文件
       if (fs.existsSync(this.convertPathPrefix)) {
@@ -53,12 +54,13 @@ export class jmDownloadApp extends plugin {
         for (const file of convertFiles) {
           if (file.endsWith('.pdf')) {
             fs.unlinkSync(`${this.convertPathPrefix}/${file}`)
+            tjLogger.info(`已清理 JMComic 临时文件: ${file}`)
           }
         }
-        tjLogger.info('已清理转换临时文件目录')
+        tjLogger.debug('完成清理 JMComic 临时转换文件')
       }
     } catch (err) {
-      tjLogger.error(`清理临时文件目录失败: ${err.message}`)
+      tjLogger.warn(`清理 JMComic 临时文件出错: ${err.message}`)
     }
   }
 
