@@ -36,12 +36,25 @@ export class jmDownloadApp extends plugin {
     await checkCommand()
     // 清理临时文件目录
     try {
+      // 清理下载目录内的所有子目录
       if (fs.existsSync(this.downloadPathPrefix)) {
-        fs.rmSync(this.downloadPathPrefix, { recursive: true, force: true })
+        const downloadDirs = fs.readdirSync(this.downloadPathPrefix)
+        for (const dir of downloadDirs) {
+          const dirPath = `${this.downloadPathPrefix}/${dir}`
+          if (fs.statSync(dirPath).isDirectory()) {
+            fs.rmSync(dirPath, { recursive: true, force: true })
+          }
+        }
         tjLogger.info('已清理下载临时文件目录')
       }
+      // 清理转换目录内的所有PDF文件
       if (fs.existsSync(this.convertPathPrefix)) {
-        fs.rmSync(this.convertPathPrefix, { recursive: true, force: true })
+        const convertFiles = fs.readdirSync(this.convertPathPrefix)
+        for (const file of convertFiles) {
+          if (file.endsWith('.pdf')) {
+            fs.unlinkSync(`${this.convertPathPrefix}/${file}`)
+          }
+        }
         tjLogger.info('已清理转换临时文件目录')
       }
     } catch (err) {
