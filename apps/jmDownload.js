@@ -20,7 +20,7 @@ export class jmDownloadApp extends plugin {
       priority: 1000,
       rule: [
         {
-          reg: '^#?(JM|jm|JMComic|jmcomic) (.*)$',
+          reg: '^#?(JM|jm|JMComic|jmcomic)(.*)$',
           fnc: 'jmDownload',
         },
       ],
@@ -35,7 +35,7 @@ export class jmDownloadApp extends plugin {
   }
 
   async jmDownload() {
-    let id = this.e.msg.replace(/JM|jm|JMComic|jmcomic|：|:/g, '').trim()
+    let id = this.e.msg.replace(/#|JM|jm|JMComic|jmcomic|：|:/g, '').trim()
     if (!id) {
       await this.reply('不带 ID 我怎么下嘛!', true)
       return
