@@ -1,3 +1,12 @@
+## [0.1.6-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.5-rel...v0.1.6-rel) (2025-03-27)
+
+
+### Bug Fixes
+
+* JMComic 指令无法匹配`#` ([#1](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/issues/1) ) & 放宽匹配限制 ([4ddb295](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/4ddb2953729d58a52a2c33c16c4715b8f29f0e22))
+
+
+
 ## [0.1.5-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.4-rel...v0.1.5-rel) (2025-03-26)
 
 
