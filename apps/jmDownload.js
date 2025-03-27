@@ -160,6 +160,7 @@ export class jmDownloadApp extends plugin {
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
         // 转换成功删掉下载的图片
+        tjLogger.debug(`清理 JMComic 临时文件: ${downloadPath}`)
         fs.rm(downloadPath, { recursive: true, force: true }, (err) => {
           if (err)
             tjLogger.warn(
@@ -229,6 +230,7 @@ export class jmDownloadApp extends plugin {
             }
           }
           tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
+          tjLogger.debug(`清理 JMComic 临时文件: ${pdfPath}`)
           fs.unlinkSync(pdfPath)
           this.e.friend.recallMsg(prepareSendFileMsg.message_id)
           if (ret !== null && typeof ret !== 'object') {
