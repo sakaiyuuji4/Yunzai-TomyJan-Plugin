@@ -32,6 +32,22 @@ export class jmDownloadApp extends plugin {
   /** 插件初始化时执行 */
   static async init() {
     await checkCommand()
+    // 清理临时文件目录
+    const downloadPath = `${_DataPath}/JMComic/cache/download`
+    const convertPath = `${_DataPath}/JMComic/cache/convert`
+
+    try {
+      if (fs.existsSync(downloadPath)) {
+        fs.rmSync(downloadPath, { recursive: true, force: true })
+        tjLogger.info('已清理下载临时文件目录')
+      }
+      if (fs.existsSync(convertPath)) {
+        fs.rmSync(convertPath, { recursive: true, force: true })
+        tjLogger.info('已清理转换临时文件目录')
+      }
+    } catch (err) {
+      tjLogger.error(`清理临时文件目录失败: ${err.message}`)
+    }
   }
 
   async jmDownload() {
