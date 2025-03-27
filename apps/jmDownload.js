@@ -84,6 +84,8 @@ export class jmDownloadApp extends plugin {
     let jmPrepareMsg = await this.reply(msg, true)
     let command = ''
     let commandResult = {}
+    const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
+    const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}.pdf`
     if (!jmDownloadApp.commandExists) {
       // 命令不存在
       tjLogger.info('JMComic 命令不存在, 任务终止')
@@ -95,6 +97,11 @@ export class jmDownloadApp extends plugin {
 
     // 开始下载
     tjLogger.debug(`开始下载 JMComic ID: ${id}`)
+    // 如果downloadPath存在, 则先删除
+    if (fs.existsSync(downloadPath)) {
+      fs.rmSync(downloadPath, { recursive: true, force: true })
+      tjLogger.info(`已清理 JMComic 临时文件: ${downloadPath}`)
+    }
     command = `jmcomic ${id} --option="${_DataPath}/JMComic/option.yml"`
     commandResult = await runCommand(command)
     tjLogger.debug(`jmcomic 下载结果: ${JSON.stringify(commandResult)}`)
@@ -139,8 +146,11 @@ export class jmDownloadApp extends plugin {
     } else if (commandResult.output.includes('本子下载完成')) {
       // 下载成功
       let downloadSuccessMsg = await this.reply('下载成功, 准备转换...', true)
-      const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
-      const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}.pdf`
+      // 如果pdfPath存在, 则先删除
+      if (fs.existsSync(pdfPath)) {
+        fs.unlinkSync(pdfPath)
+        tjLogger.info(`已清理 JMComic 临时文件: ${pdfPath}`)
+      }
       // 开始将该路径中的图片合并成 PDF
       let convertResult = await imagesToPDF(
         downloadPath,
