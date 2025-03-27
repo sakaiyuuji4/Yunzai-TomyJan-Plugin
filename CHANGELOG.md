@@ -1,15 +1,32 @@
-## [0.1.7-dev](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.5-rel...v0.1.7-dev) (2025-03-27)
+## [0.1.7-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.6-rel...v0.1.7-rel) (2025-03-27)
+
+
+### Bug Fixes
+
+* `载入插件时清理 JMComic 临时目录` 逻辑问题 ([6528685](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/652868596528d4f2805111a1f3377dd5d8314805))
+
+
+### Features
+
+* JMComic 下载前先删除临时文件 ([a92854c](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/a92854cae89284fe7194d5920d1cde307987970c))
+
+
+### Performance Improvements
+
+* 部分日志输出 ([be78c2a](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/be78c2ab43b7fccaec713f31bd3e2f5df502ba0e))
+* 部分日志输出 ([31affc0](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/31affc031fbe1052f6fa4e7a2efeb79489668e41))
+* 日志输出 ([819df61](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/819df619c71c4d159e072c596a403020f32f6688))
+* 载入插件时清理 JMComic 临时目录 ([048f79f](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/048f79f2485c2d3aef96d895e7f8ac49374ce842))
+* JMComic 部分代码逻辑 ([573b7ac](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/573b7ac245eab05d68e9d67ddbbc55274013cb8e))
+
+
+
+## [0.1.6-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.5-rel...v0.1.6-rel) (2025-03-27)
 
 
 ### Bug Fixes
 
 * JMComic 指令无法匹配`#` ([#1](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/issues/1) ) & 放宽匹配限制 ([4ddb295](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/4ddb2953729d58a52a2c33c16c4715b8f29f0e22))
-
-
-### Performance Improvements
-
-* 载入插件时清理 JMComic 临时目录 ([048f79f](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/048f79f2485c2d3aef96d895e7f8ac49374ce842))
-* JMComic 部分代码逻辑 ([573b7ac](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/573b7ac245eab05d68e9d67ddbbc55274013cb8e))
 
 
 
