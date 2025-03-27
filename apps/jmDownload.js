@@ -28,21 +28,20 @@ export class jmDownloadApp extends plugin {
   }
 
   static commandExists = false
+  static downloadPathPrefix = `${_DataPath}/JMComic/cache/download`
+  static convertPathPrefix = `${_DataPath}/JMComic/cache/convert`
 
   /** 插件初始化时执行 */
   static async init() {
     await checkCommand()
     // 清理临时文件目录
-    const downloadPath = `${_DataPath}/JMComic/cache/download`
-    const convertPath = `${_DataPath}/JMComic/cache/convert`
-
     try {
-      if (fs.existsSync(downloadPath)) {
-        fs.rmSync(downloadPath, { recursive: true, force: true })
+      if (fs.existsSync(this.downloadPathPrefix)) {
+        fs.rmSync(this.downloadPathPrefix, { recursive: true, force: true })
         tjLogger.info('已清理下载临时文件目录')
       }
-      if (fs.existsSync(convertPath)) {
-        fs.rmSync(convertPath, { recursive: true, force: true })
+      if (fs.existsSync(this.convertPathPrefix)) {
+        fs.rmSync(this.convertPathPrefix, { recursive: true, force: true })
         tjLogger.info('已清理转换临时文件目录')
       }
     } catch (err) {
@@ -125,8 +124,8 @@ export class jmDownloadApp extends plugin {
     } else if (commandResult.output.includes('本子下载完成')) {
       // 下载成功
       let downloadSuccessMsg = await this.reply('下载成功, 准备转换...', true)
-      const downloadPath = `${_DataPath}/JMComic/cache/download/${id}`
-      const pdfPath = `${_DataPath}/JMComic/cache/convert/${id}.pdf`
+      const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
+      const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}.pdf`
       // 开始将该路径中的图片合并成 PDF
       let convertResult = await imagesToPDF(
         downloadPath,
