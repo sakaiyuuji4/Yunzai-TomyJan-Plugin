@@ -1,7 +1,7 @@
 import tjLogger from '../components/logger.js'
 import config from '../components/config.js'
 import crypto from 'crypto'
-import { dataPath, resPath } from '../data/system/pluginConstants.js'
+import { dataPath, resPath, pluginAuthor, pluginName, pluginVer } from '../data/system/pluginConstants.js'
 import fs from 'fs'
 import path from 'path'
 import fetch from 'node-fetch'
@@ -270,9 +270,13 @@ export async function runCommand(command) {
  * @param {string} outputPath 输出 PDF 路径
  * @param {string} pdfTitle PDF 标题
  * @param {string} [password] PDF 密码，可选
+ * @param {Object} [metadata] PDF 元信息，可选
+ * @param {string} [metadata.author] 作者
+ * @param {string} [metadata.subject] 主题
+ * @param {Array<string>} [metadata.keywords] 关键词
  * @returns {Promise<string>} 转换成功返回 PDF 路径
  */
-export async function imagesToPDF(inputDir, outputPath, pdfTitle, password) {
+export async function imagesToPDF(inputDir, outputPath, pdfTitle, password, metadata = {}) {
   tjLogger.debug('将目录下的图片转为 PDF:', inputDir, outputPath)
   const files = fs
     .readdirSync(inputDir)
@@ -280,7 +284,15 @@ export async function imagesToPDF(inputDir, outputPath, pdfTitle, password) {
     .sort()
 
   const pdfDoc = await PDFDocument.create()
+
+  // 设置标题和其他元信息
   pdfDoc.setTitle(pdfTitle)
+  if (metadata?.author) pdfDoc.setAuthor(metadata.author)
+  if (metadata?.subject) pdfDoc.setSubject(metadata.subject)
+  if (metadata?.keywords) pdfDoc.setKeywords(metadata.keywords)
+  let copyRightAuthor = `${pluginAuthor}/${pluginName}@${pluginVer}`
+  pdfDoc.setCreator(copyRightAuthor)
+  pdfDoc.setProducer(copyRightAuthor)
 
   for (const file of files) {
     const imgPath = path.join(inputDir, file)

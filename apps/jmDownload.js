@@ -7,7 +7,7 @@ import {
   getFileSizeInHumanReadableFormat,
 } from '../model/utils.js'
 import httpServer from '../model/httpServer.js'
-import { _DataPath } from '../data/system/pluginConstants.js'
+import { _DataPath, pluginAuthor } from '../data/system/pluginConstants.js'
 import common from '../../../lib/common/common.js'
 import fs from 'fs'
 
@@ -167,8 +167,13 @@ export class jmDownloadApp extends plugin {
       let convertResult = await imagesToPDF(
         downloadPath,
         pdfPath,
-        `JMComic-${id}_Powered-By-TomyJan`,
-        pdfPassword
+        `JMComic-${id}_Powered-By-${pluginAuthor}`,
+        pdfPassword,
+        {
+          author: pluginAuthor,
+          subject: `JMComic${id}`,
+          keywords: ['JMComic',`JMComic${id}`,`jm${id}`],
+        }
       )
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
