@@ -95,7 +95,9 @@ export class jmDownloadApp extends plugin {
     let commandResult = {}
     const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
     let pdfPassword = config.getConfig().JMComic.pdfPassword
-    const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}${pdfPassword ? `_加密` : ''}.pdf`
+    const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}${
+      pdfPassword ? `_加密` : ''
+    }.pdf`
     if (!jmDownloadApp.commandExists) {
       // 命令不存在
       tjLogger.info('JMComic 命令不存在, 任务终止')
