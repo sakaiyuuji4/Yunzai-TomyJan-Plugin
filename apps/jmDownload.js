@@ -202,7 +202,10 @@ export class jmDownloadApp extends plugin {
             this.e.group.recallMsg(prepareSendFileMsg.message_id)
             if (ret !== null && typeof ret !== 'object') {
               return `文件发送失败, 可能是协议不支持`
-            } else if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
+            } else if (
+              config.getConfig().JMComic.sendPdfPassword &&
+              pdfPassword
+            ) {
               this.reply(`文件发送成功, 密码: ${pdfPassword}`)
             }
           } catch (e) {
@@ -225,7 +228,11 @@ export class jmDownloadApp extends plugin {
               let msgId = await this.reply(msg, true)
               let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
               if (tmpFileUrl) {
-                msg = `文件大小: ${pdfSize}\n${(config.getConfig().JMComic.sendPdfPassword && pdfPassword) ? `密码: ${pdfPassword}\n` : ''}点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+                msg = `文件大小: ${pdfSize}\n${
+                  config.getConfig().JMComic.sendPdfPassword && pdfPassword
+                    ? `密码: ${pdfPassword}\n`
+                    : ''
+                }点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
                 this.e.group.recallMsg(msgId.message_id)
                 this.reply(msg, true)
               }
@@ -245,9 +252,12 @@ export class jmDownloadApp extends plugin {
             this.e.friend.recallMsg(prepareSendFileMsg.message_id)
             if (ret !== null && typeof ret !== 'object') {
               return `文件发送失败, 可能是协议不支持`
-            } else if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
+            } else if (
+              config.getConfig().JMComic.sendPdfPassword &&
+              pdfPassword
+            ) {
               this.reply(`文件发送成功, 密码: ${pdfPassword}`)
-          }
+            }
           } catch (e) {
             tjLogger.error(`发送文件失败: ${e.message}`)
             if (e.message.includes('send feed not all success'))
@@ -264,7 +274,11 @@ export class jmDownloadApp extends plugin {
               let msgId = await this.reply(msg, true)
               let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
               if (tmpFileUrl) {
-                msg = `文件大小: ${pdfSize}\n${(config.getConfig().JMComic.sendPdfPassword && pdfPassword) ? `密码: ${pdfPassword}\n` : ''}点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+                msg = `文件大小: ${pdfSize}\n${
+                  config.getConfig().JMComic.sendPdfPassword && pdfPassword
+                    ? `密码: ${pdfPassword}\n`
+                    : ''
+                }点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
                 this.e.friend.recallMsg(msgId.message_id)
                 this.reply(msg, true)
               }
