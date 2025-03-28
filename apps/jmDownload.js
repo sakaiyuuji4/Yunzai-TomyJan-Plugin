@@ -96,7 +96,7 @@ export class jmDownloadApp extends plugin {
     const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
     let pdfPassword = config.getConfig().JMComic.pdfPassword
     const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}${
-      pdfPassword ? `_加密` : ''
+      pdfPassword ? `_Password` : ''
     }.pdf`
     if (!jmDownloadApp.commandExists) {
       // 命令不存在
