@@ -1,3 +1,24 @@
+## [0.1.9-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.8-rel...v0.1.9-rel) (2025-03-28)
+
+
+### Bug Fixes
+
+* **httpServer:** 在 win 系统上安全判断不正确 ([2da6f41](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/2da6f412e2273f4473333ee13b593b97ee14520c))
+* **JMComic:** 文件名别用中文逼事太多 ([8c1dc90](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/8c1dc9028b64cb001ea46ac91bf129e78e5347ec))
+
+
+### Features
+
+* **JMComic:** 支持发送 pdf 密码 ([a2907d4](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/a2907d4858f3670da4d9beb8db7280d9076fc712))
+
+
+### Performance Improvements
+
+* **JMComic:** 消息中的多余空行 ([c8ba364](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/c8ba36431e3e8e47c37a362d981237a32fc65aca))
+* **JMComic:** 优化逻辑 ([a3fe105](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/a3fe105df6ab1a43f109f6a771bf7181dae7c077))
+
+
+
 ## [0.1.8-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.7-rel...v0.1.8-rel) (2025-03-28)
 
 
