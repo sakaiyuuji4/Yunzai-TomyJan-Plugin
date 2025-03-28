@@ -94,6 +94,13 @@ export function supportGuoba() {
           component: 'Input',
         },
         {
+          field: 'JMComic.sendPdfPassword',
+          label: '发送 PDF 密码',
+          helpMessage: '是否发送 PDF 密码',
+          bottomHelpMessage: '是否发送 PDF 密码, 默认不发送',
+          component: 'Switch',
+        },
+        {
           component: 'Divider',
           label: 'HTTP 服务器设置',
         },
