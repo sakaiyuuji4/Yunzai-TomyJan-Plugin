@@ -11,7 +11,8 @@ import { Buffer } from 'buffer'
 import { isWin } from '../data/system/pluginConstants.js'
 import { exec } from 'child_process'
 import iconv from 'iconv-lite'
-import { PDFDocument } from 'pdf-lib'
+import pkg from 'pdf-lib-plus-encrypt'
+const { PDFDocument } = pkg
 import sharp from 'sharp'
 
 /**
@@ -301,19 +302,19 @@ export async function imagesToPDF(inputDir, outputPath, pdfTitle, password) {
     })
   }
 
-  // 如果提供了密码，设置 PDF 密码保护
+  // 设置加密选项
   if (password) {
     await pdfDoc.encrypt({
-      userPassword: password, // 用户密码，用于打开和查看 PDF
-      ownerPassword: password, // 所有者密码，用于管理 PDF 权限
+      userPassword: password,
+      ownerPassword: password,
       permissions: {
-        printing: 'highResolution', // 允许高质量打印，可选值：'highResolution'(高质量), 'lowResolution'(低质量), false(禁止打印)
-        modifying: false, // 禁止修改 PDF 文档，包括添加、删除或修改页面
-        copying: false, // 禁止复制 PDF 中的内容，包括文本、图片等
-        annotating: false, // 允许添加注释，包括高亮、下划线、文本注释等
-        fillingForms: false, // 禁止填写 PDF 表单
-        contentAccessibility: false, // 禁止内容访问，影响屏幕阅读器等辅助工具的使用
-        documentAssembly: false, // 禁止文档组装，包括插入、旋转或删除页面等操作
+        printing: 'highResolution',   // 允许高质量打印
+        modifying: false,             // 禁止修改 PDF 文档
+        copying: true,                // 允许复制 PDF 中的内容
+        annotating: false,            // 禁止添加注释
+        fillingForms: false,          // 禁止填写 PDF 表单
+        contentAccessibility: false,   // 禁止内容访问
+        documentAssembly: false,      // 禁止文档组装
       },
     })
   }
