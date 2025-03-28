@@ -1,3 +1,24 @@
+## [0.1.8-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.7-rel...v0.1.8-rel) (2025-03-28)
+
+
+### Bug Fixes
+
+* **JMComic:** 换用社区版 `pdf-lib-plus-encrypt` 以实现 pdf 加密 ([#2](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/issues/2) ) ([ac07436](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/ac07436a5999583004121f0c78154df839a77342))
+
+
+### Features
+
+* JMComic 输出 pdf 文件大小 ([092e147](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/092e147ad20b7f502a04e97cd85ccdb2d7ea9a30))
+* JMComic 支持给 pdf 设置密码([#2](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/issues/2) ) ([3ac9547](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/3ac9547411f0b85660a48850b2a9f8003fdbe1eb))
+* **JMComic:** 写 pdf 的元信息 ([eeebbbe](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/eeebbbe036734b4453cb7b758bb1d273dd17fc80))
+
+
+### Performance Improvements
+
+* **JMComic:** 瞎几把翻译一些常见发送文件错误消息 ([10217e6](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/10217e6a4b03ebff2e0bd078defdfb0a624b822b))
+
+
+
 ## [0.1.7-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.6-rel...v0.1.7-rel) (2025-03-27)
 
 

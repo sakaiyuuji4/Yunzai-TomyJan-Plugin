@@ -93,6 +93,7 @@ git -C ./plugins/Yunzai-TomyJan-Plugin/ pull
 ### JMComic 下载
 
 - `#jm 1112863` 下载 JMComic 漫画并转换为 PDF 发送, 发送失败可选临时上传到插件内置 HTTP 服务器供用户下载
+  注意大概由于 ICQQ 协议问题, 文件有相当大的概率发送失败, 建议配置启用插件内置 HTTP 服务器作为备用方案
 
 ## 关于
 
