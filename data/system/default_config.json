@@ -3,6 +3,10 @@
     "logLevel": "info",
     "saveToFile": false
   },
+  "JMComic": {
+    "enable": true,
+    "pdfPassword": ""
+  },
   "httpServer": {
     "enable": false,
     "listenPort": 5252,

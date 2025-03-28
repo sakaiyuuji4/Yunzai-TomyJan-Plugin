@@ -268,9 +268,10 @@ export async function runCommand(command) {
  * @param {string} inputDir 输入目录
  * @param {string} outputPath 输出 PDF 路径
  * @param {string} pdfTitle PDF 标题
+ * @param {string} [password] PDF 密码，可选
  * @returns {Promise<string>} 转换成功返回 PDF 路径
  */
-export async function imagesToPDF(inputDir, outputPath, pdfTitle) {
+export async function imagesToPDF(inputDir, outputPath, pdfTitle, password) {
   tjLogger.debug('将目录下的图片转为 PDF:', inputDir, outputPath)
   const files = fs
     .readdirSync(inputDir)
@@ -297,6 +298,23 @@ export async function imagesToPDF(inputDir, outputPath, pdfTitle) {
       y: 0,
       width,
       height,
+    })
+  }
+
+  // 如果提供了密码，设置 PDF 密码保护
+  if (password) {
+    await pdfDoc.encrypt({
+      userPassword: password,    // 用户密码，用于打开和查看 PDF
+      ownerPassword: password,   // 所有者密码，用于管理 PDF 权限
+      permissions: {
+        printing: 'highResolution',  // 允许高质量打印，可选值：'highResolution'(高质量), 'lowResolution'(低质量), false(禁止打印)
+        modifying: false,            // 禁止修改 PDF 文档，包括添加、删除或修改页面
+        copying: false,              // 禁止复制 PDF 中的内容，包括文本、图片等
+        annotating: false,           // 允许添加注释，包括高亮、下划线、文本注释等
+        fillingForms: false,         // 禁止填写 PDF 表单
+        contentAccessibility: false, // 禁止内容访问，影响屏幕阅读器等辅助工具的使用
+        documentAssembly: false,     // 禁止文档组装，包括插入、旋转或删除页面等操作
+      },
     })
   }
 

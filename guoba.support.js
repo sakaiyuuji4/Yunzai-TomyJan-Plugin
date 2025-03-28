@@ -77,6 +77,24 @@ export function supportGuoba() {
         },
         {
           component: 'Divider',
+          label: 'JMComic 功能设置',
+        },
+        {
+          field: 'JMComic.enable',
+          label: '启用',
+          helpMessage: '启用 JMComic 功能',
+          bottomHelpMessage: '启用 JMComic 功能, 默认启用',
+          component: 'Switch',
+        },
+        {
+          field: 'JMComic.pdfPassword',
+          label: 'PDF 密码',
+          helpMessage: '设置 PDF 密码',
+          bottomHelpMessage: '设置 PDF 密码, 留空不设置',
+          component: 'Input',
+        },
+        {
+          component: 'Divider',
           label: 'HTTP 服务器设置',
         },
         {

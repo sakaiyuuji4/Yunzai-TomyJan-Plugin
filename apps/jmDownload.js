@@ -69,6 +69,11 @@ export class jmDownloadApp extends plugin {
   }
 
   async jmDownload() {
+    if (!config.getConfig().JMComic.enable) {
+      await this.reply('JMComic 功能未启用', true)
+      return
+    }
+
     let id = this.e.msg.replace(/#|JM|jm|JMComic|jmcomic|：|:/g, '').trim()
     if (!id) {
       await this.reply('不带 ID 我怎么下嘛!', true)
@@ -89,7 +94,8 @@ export class jmDownloadApp extends plugin {
     let command = ''
     let commandResult = {}
     const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
-    const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}.pdf`
+    let pdfPassword = config.getConfig().JMComic.pdfPassword
+    const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}${pdfPassword ? `_加密` : ''}.pdf`
     if (!jmDownloadApp.commandExists) {
       // 命令不存在
       tjLogger.info('JMComic 命令不存在, 任务终止')
@@ -159,7 +165,8 @@ export class jmDownloadApp extends plugin {
       let convertResult = await imagesToPDF(
         downloadPath,
         pdfPath,
-        `JMComic-${id}_Powered-By-TomyJan`
+        `JMComic-${id}_Powered-By-TomyJan`,
+        pdfPassword
       )
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
       if (convertResult == pdfPath) {
