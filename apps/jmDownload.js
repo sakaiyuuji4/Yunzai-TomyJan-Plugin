@@ -172,7 +172,7 @@ export class jmDownloadApp extends plugin {
         {
           author: pluginAuthor,
           subject: `JMComic${id}`,
-          keywords: ['JMComic',`JMComic${id}`,`jm${id}`],
+          keywords: ['JMComic', `JMComic${id}`, `jm${id}`],
         }
       )
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)

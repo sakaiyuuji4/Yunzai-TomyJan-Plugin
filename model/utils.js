@@ -1,7 +1,13 @@
 import tjLogger from '../components/logger.js'
 import config from '../components/config.js'
 import crypto from 'crypto'
-import { dataPath, resPath, pluginAuthor, pluginName, pluginVer } from '../data/system/pluginConstants.js'
+import {
+  dataPath,
+  resPath,
+  pluginAuthor,
+  pluginName,
+  pluginVer,
+} from '../data/system/pluginConstants.js'
 import fs from 'fs'
 import path from 'path'
 import fetch from 'node-fetch'
@@ -276,7 +282,13 @@ export async function runCommand(command) {
  * @param {Array<string>} [metadata.keywords] 关键词
  * @returns {Promise<string>} 转换成功返回 PDF 路径
  */
-export async function imagesToPDF(inputDir, outputPath, pdfTitle, password, metadata = {}) {
+export async function imagesToPDF(
+  inputDir,
+  outputPath,
+  pdfTitle,
+  password,
+  metadata = {}
+) {
   tjLogger.debug('将目录下的图片转为 PDF:', inputDir, outputPath)
   const files = fs
     .readdirSync(inputDir)
@@ -320,13 +332,13 @@ export async function imagesToPDF(inputDir, outputPath, pdfTitle, password, meta
       userPassword: password,
       ownerPassword: password,
       permissions: {
-        printing: 'highResolution',   // 允许高质量打印
-        modifying: false,             // 禁止修改 PDF 文档
-        copying: true,                // 允许复制 PDF 中的内容
-        annotating: false,            // 禁止添加注释
-        fillingForms: false,          // 禁止填写 PDF 表单
-        contentAccessibility: false,   // 禁止内容访问
-        documentAssembly: false,      // 禁止文档组装
+        printing: 'highResolution', // 允许高质量打印
+        modifying: false, // 禁止修改 PDF 文档
+        copying: true, // 允许复制 PDF 中的内容
+        annotating: false, // 禁止添加注释
+        fillingForms: false, // 禁止填写 PDF 表单
+        contentAccessibility: false, // 禁止内容访问
+        documentAssembly: false, // 禁止文档组装
       },
     })
   }
