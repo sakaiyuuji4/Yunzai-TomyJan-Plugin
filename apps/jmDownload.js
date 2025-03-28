@@ -196,9 +196,11 @@ export class jmDownloadApp extends plugin {
             tjLogger.error(`发送文件失败: ${e.message}`)
             if (e.message == 'group space not enough')
               e.message = '群文件空间不足'
-            else if (e.message.includes('send feed not all success')) // send feed not all success. failed_count=1 , 大概是协议问题
+            else if (e.message.includes('send feed not all success'))
+              // send feed not all success. failed_count=1 , 大概是协议问题
               e.message = '部分分片未发送成功'
-            else if (e.message.includes('unknown highway error')) // 大概也是协议问题
+            else if (e.message.includes('unknown highway error'))
+              // 大概也是协议问题
               e.message = '未知通道错误'
             ret = null
             let msg = `文件发送失败, 错误信息: \n${e.message}`
@@ -232,9 +234,11 @@ export class jmDownloadApp extends plugin {
             ret = await this.e.friend.sendFile(pdfPath)
           } catch (e) {
             tjLogger.error(`发送文件失败: ${e.message}`)
-            if (e.message.includes('send feed not all success')) // send feed not all success. failed_count=1 , 大概是协议问题
+            if (e.message.includes('send feed not all success'))
+              // send feed not all success. failed_count=1 , 大概是协议问题
               e.message = '部分分片未发送成功'
-            else if (e.message.includes('unknown highway error')) // 大概也是协议问题
+            else if (e.message.includes('unknown highway error'))
+              // 大概也是协议问题
               e.message = '未知通道错误'
             ret = null
             // this.reply(`文件发送失败, 错误信息: ${e.message}`, true)
