@@ -197,6 +197,14 @@ export class jmDownloadApp extends plugin {
           let ret
           try {
             ret = await this.e.group.fs.upload(pdfPath)
+            tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
+            fs.unlinkSync(pdfPath)
+            this.e.group.recallMsg(prepareSendFileMsg.message_id)
+            if (ret !== null && typeof ret !== 'object') {
+              return `文件发送失败, 可能是协议不支持`
+            } else if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
+              this.reply(`文件发送成功, 密码: ${pdfPassword}`)
+            }
           } catch (e) {
             tjLogger.error(`发送文件失败: ${e.message}`)
             if (e.message == 'group space not enough')
@@ -225,21 +233,21 @@ export class jmDownloadApp extends plugin {
               this.reply(msg, true)
             }
           }
-          tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
-          fs.unlinkSync(pdfPath)
-          this.e.group.recallMsg(prepareSendFileMsg.message_id)
-          if (ret !== null && typeof ret !== 'object') {
-            return `文件发送失败, 可能是协议不支持`
-          }
-          if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
-            this.reply(`文件发送成功, 密码: ${pdfPassword}`)
-          }
           return null
         } else if (this.e.isPrivate) {
           this.e.friend.recallMsg(downloadSuccessMsg.message_id)
           let ret
           try {
             ret = await this.e.friend.sendFile(pdfPath)
+            tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
+            tjLogger.debug(`清理 JMComic 临时文件: ${pdfPath}`)
+            fs.unlinkSync(pdfPath)
+            this.e.friend.recallMsg(prepareSendFileMsg.message_id)
+            if (ret !== null && typeof ret !== 'object') {
+              return `文件发送失败, 可能是协议不支持`
+            } else if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
+              this.reply(`文件发送成功, 密码: ${pdfPassword}`)
+          }
           } catch (e) {
             tjLogger.error(`发送文件失败: ${e.message}`)
             if (e.message.includes('send feed not all success'))
@@ -263,16 +271,6 @@ export class jmDownloadApp extends plugin {
             } else {
               this.reply(msg, true)
             }
-          }
-          tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
-          tjLogger.debug(`清理 JMComic 临时文件: ${pdfPath}`)
-          fs.unlinkSync(pdfPath)
-          this.e.friend.recallMsg(prepareSendFileMsg.message_id)
-          if (ret !== null && typeof ret !== 'object') {
-            return `文件发送失败, 可能是协议不支持`
-          }
-          if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
-            this.reply(`文件发送成功, 密码: ${pdfPassword}`)
           }
           return null
         } else {
