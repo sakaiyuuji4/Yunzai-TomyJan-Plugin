@@ -72,14 +72,23 @@ class httpServer {
             req.url === '/' ? 'index.html' : req.url
           )
 
+          // 规范化路径，以便在 Windows 上进行正确的路径比较
+          const normalizedFilePath = path.normalize(filePath)
+          const normalizedRootDir = path.normalize(this.rootDir)
+
           // 安全检查：确保请求的文件在根目录下
-          if (!filePath.startsWith(this.rootDir)) {
+          if (!normalizedFilePath.startsWith(normalizedRootDir)) {
             tjLogger.warn(
               `HTTP服务器: 访问被拒绝, 请求路径: ${req.url}, clientIp=${clientIp}`
             )
             this.sendErrorResponse(res, 403, '访问被拒绝')
             return
           }
+
+          // 在路径检查部分添加调试日志
+          tjLogger.debug(
+            `HTTP服务器: 路径检查 - 规范化文件路径: ${normalizedFilePath}, 规范化根目录: ${normalizedRootDir}`
+          )
 
           // 检查文件是否存在
           if (!fs.existsSync(filePath)) {
