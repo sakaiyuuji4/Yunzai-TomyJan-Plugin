@@ -84,6 +84,8 @@ export class jmDownloadApp extends plugin {
       await common.sleep(600)
       tjLogger.debug(`JMComic ID: ${id} 已有相同任务在下载, 等待 600ms...`)
     }
+    // 创建下载目录作为任务标记
+    await fs.mkdirSync(downloadPath, { recursive: true })
     // 开始下载
     tjLogger.info(`开始下载 JMComic ID: ${id}`)
     command = `jmcomic ${id} --option="${_DataPath}/JMComic/option.yml"`
@@ -132,7 +134,12 @@ export class jmDownloadApp extends plugin {
       // 下载成功
       let downloadSuccessMsg = await this.reply('下载成功, 准备转换...', true)
       // 先给目录重命名加上时间戳后缀防止同时重复下载冲突
-      downloadPath += `_${Date.now()}`
+      const timeStamp = Date.now()
+      await fs.renameSync(
+        downloadPath,
+        `${downloadPath}_${timeStamp}`
+      )
+      downloadPath += `_${timeStamp}`
       // 如果pdfPath存在, 则先删除
       if (fs.existsSync(pdfPath)) {
         fs.unlinkSync(pdfPath)
