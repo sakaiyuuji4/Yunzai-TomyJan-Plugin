@@ -75,6 +75,12 @@ git -C ./plugins/Yunzai-TomyJan-Plugin/ pull
     "logLevel": "info", // 日志等级, 可选值: trace, debug, info, warn, error, fatal
     "saveToFile": false // 是否保存日志到文件
   },
+    "JMComic": { // JMComic 功能配置
+    "enable": true, // 是否启用 JMComic 功能
+    "pdfPassword": "", // PDF 密码, 为空则不加密
+    "sendPdfPassword": false, // 是否发送 PDF 密码, 仅在 `pdfPassword` 不为空时生效
+    "sendFilePolicy": 1 // 发送文件策略, 0=只发文件, 1=优先文件, 2=只发链接
+  },
   "httpServer": { // 插件内置 HTTP 服务器配置
     "enable": false, // 是否启用 HTTP 服务器, 默认关闭, 建议手动启用并修改相关配置
     "listenPort": 5252, // 监听端口, 默认 5252

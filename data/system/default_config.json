@@ -6,7 +6,8 @@
   "JMComic": {
     "enable": true,
     "pdfPassword": "",
-    "sendPdfPassword": false
+    "sendPdfPassword": false,
+    "sendFilePolicy": 1
   },
   "httpServer": {
     "enable": false,

@@ -162,10 +162,8 @@ export class jmDownloadApp extends plugin {
               `删除下载的图片路径 ${downloadPath} 失败: ${err.message}`
             )
         })
-        let prepareSendFileMsg = await this.reply(
-          `转 PDF 成功, 文件大小 ${pdfSize}, 准备发送...`,
-          true
-        )
+        let prepareMsg = `转 PDF 成功, 文件大小 ${pdfSize}, 准备${config.getConfig().JMComic.sendFilePolicy == 3 ? `上传到内置服务器` : `发送`}...`
+        let prepareSendFileMsg = await this.reply(prepareMsg, true)
         if (this.e.isGroup) this.e.group.recallMsg(downloadSuccessMsg.message_id)
         if (this.e.isPrivate) this.e.private.recallMsg(downloadSuccessMsg.message_id)
 

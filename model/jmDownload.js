@@ -77,68 +77,83 @@ export default class jmDownload {
   static async sendPdf(pdfPath, pdfSize, pdfPassword, e) {
     if (!e.isGroup && !e.isPrivate) return '未知消息来源, 请检查'
     let sendFileRet
-    try {
-      if (e.isGroup) sendFileRet = await e.group.fs.upload(pdfPath)
-      else sendFileRet = await e.friend.sendFile(pdfPath)
-    } catch (err) { // 发送文件出问题
+    let sendFilePolicy = config.getConfig().JMComic.sendFilePolicy
+    tjLogger.debug(`发送 PDF 策略: ${sendFilePolicy}, (1=只传文件, 2=优先文件, 3=只传链接)`)
 
-      tjLogger.error(`发送文件失败: ${err.message}`)
-      if (err.message == 'group space not enough')
-        err.message = '群文件空间不足'
-      else if (err.message.includes('send feed not all success'))
-        // send feed not all success. failed_count=1 , 大概是协议问题
-        err.message = '部分分片未发送成功'
-      else if (err.message.includes('unknown highway error'))
-        // 大概也是协议问题
-        err.message = '未知通道错误'
+    if (sendFilePolicy == 1 || sendFilePolicy == 2) { // 只传文件或优先传文件
+      try {
+        if (e.isGroup) sendFileRet = await e.group.fs.upload(pdfPath)
+        else sendFileRet = await e.friend.sendFile(pdfPath)
+      } catch (err) { // 发送文件出问题
 
-      let msg = `文件发送失败, 错误信息: \n${err.message}`
+        tjLogger.error(`发送文件失败: ${err.message}`)
+        if (err.message == 'group space not enough')
+          err.message = '群文件空间不足'
+        else if (err.message.includes('send feed not all success'))
+          // send feed not all success. failed_count=1 , 大概是协议问题
+          err.message = '部分分片未发送成功'
+        else if (err.message.includes('unknown highway error'))
+          // 大概也是协议问题
+          err.message = '未知通道错误'
 
-      if (
-        config.getConfig().httpServer.enable &&
-        err.message != '群文件空间不足'
-      ) { // 启用了 HTTP 服务器并且错误不是群文件空间不足的话, 尝试创建临时链接
-        msg += `\n将尝试上传到内置服务器...`
-        let msgId = await e.reply(msg, true)
-        let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
-        if (tmpFileUrl) {
-          msg = `文件大小: ${pdfSize}\n${
-            config.getConfig().JMComic.sendPdfPassword && pdfPassword
-              ? `密码: ${pdfPassword}\n`
-              : ''
-          }点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+        let msg = `文件发送失败, 错误信息: \n${err.message}`
+
+        if (sendFilePolicy == 2 && err.message != '群文件空间不足') { // 发送策略为优先文件并且错误不是群文件空间不足的话, 尝试创建临时链接
+          msg += `\n将尝试上传到内置服务器...`
+          let msgId = await e.reply(msg, true)
+          let sendLinkRet = await sendLink()
           e.group.recallMsg(msgId.message_id)
+          e.reply(sendLinkRet, true)
+        } else {
           e.reply(msg, true)
         }
+
+        return
+      }
+
+      // 发送文件没报错
+      tjLogger.debug(`发送文件结果: ${JSON.stringify(sendFileRet)}`)
+      if (sendFileRet !== null && typeof sendFileRet == 'object') {
+        // 返回了对象说明发送成功
+        tjLogger.info(`发送文件成功: ${pdfPath}`)
+        fs.unlinkSync(pdfPath)
+        tjLogger.debug(`已删除临时文件: ${pdfPath}`)
+        if (
+          config.getConfig().JMComic.sendPdfPassword &&
+          pdfPassword
+        ) {
+          tjLogger.debug(`发送密码 ${pdfPassword}, pdfPath=${pdfPath}`)
+          e.reply(`文件发送成功, 密码: ${pdfPassword}`)
+        }
+      } else if (sendFileRet !== null) {
+        // 发送返回非空, 那就报下错吧
+        e.reply(`发送文件出问题: ${sendFileRet}`)
       } else {
-        e.reply(msg, true)
+        // 发送返回空, 这啥情况
+        e.reply(`发送文件出问题, 返回为空`)
       }
 
       return
-    }
-
-    // 发送文件没报错
-    tjLogger.debug(`发送文件结果: ${JSON.stringify(sendFileRet)}`)
-    if (sendFileRet !== null && typeof sendFileRet == 'object') {
-      // 返回了对象说明发送成功
-      tjLogger.debug(`发送文件成功: ${pdfPath}`)
-      fs.unlinkSync(pdfPath)
-      tjLogger.debug(`已删除临时文件: ${pdfPath}`)
-      if (
-        config.getConfig().JMComic.sendPdfPassword &&
-        pdfPassword
-      ) {
-        tjLogger.debug(`发送密码 ${pdfPassword}, pdfPath=${pdfPath}`)
-        e.reply(`文件发送成功, 密码: ${pdfPassword}`)
-      }
-    } else if (sendFileRet !== null) {
-      // 发送返回非空, 那就报下错吧
-      e.reply(`发送文件出问题: ${sendFileRet}`)
+    } else if (sendFilePolicy == 3) { // 发送策略为只传链接
+      let sendLinkRet = await sendLink()
+      e.reply(sendLinkRet, true)
     } else {
-      // 发送返回空, 这啥情况
-      e.reply(`发送文件出问题, 返回为空`)
+      e.reply(`未知的发送策略 ${sendFilePolicy}, 请检查`, true)
     }
 
-    return
+    async function sendLink() {
+      let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
+      if (tmpFileUrl) {
+        let ret = `文件大小: ${pdfSize}\n${
+          config.getConfig().JMComic.sendPdfPassword && pdfPassword
+            ? `密码: ${pdfPassword}\n`
+            : ''
+        }点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
+        return ret
+      } else {
+        return '创建临时链接失败'
+      }
+    }
+
   }
 }

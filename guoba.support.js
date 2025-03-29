@@ -101,6 +101,21 @@ export function supportGuoba() {
           component: 'Switch',
         },
         {
+          field: 'JMComic.sendFilePolicy',
+          label: '发送策略',
+          helpMessage: '发送策略, 只传文件 / 优先文件 / 只发链接',
+          bottomHelpMessage: '发送文件的策略, 设置非只传文件请配置并开启下方的 HTTP 服务器',
+          component: 'Select',
+          componentProps: {
+            options: [
+              { label: '只传文件', value: 1 },
+              { label: '优先文件', value: 2 },
+              { label: '只发链接', value: 3 },
+            ],
+            placeholder: '读取配置失败',
+          },
+        },
+        {
           component: 'Divider',
           label: 'HTTP 服务器设置',
         },
