@@ -1,3 +1,22 @@
+## [0.1.10-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.9-rel...v0.1.10-rel) (2025-03-29)
+
+
+### Bug Fixes
+
+* **JMComic:** 下载目录重命名错误 ([096f440](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/096f4404f8d61cd14203ab79c74483acb6399631))
+
+
+### Features
+
+* **JMComic:** 支持设置发送策略 只传文件 / 优先文件 / 只发链接 ([#5](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/issues/5) ) ([4e511e7](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/4e511e776324286e5190ec0c5846ee0249a74e5b))
+
+
+### Performance Improvements
+
+* **JMComic:** 防止重复任务冲突 ([64c99f5](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/64c99f5293cefd57e3f0249d4a905dab5e99cdde))
+
+
+
 ## [0.1.9-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.8-rel...v0.1.9-rel) (2025-03-28)
 
 
