@@ -6,7 +6,7 @@ import {
   imagesToPDF,
   getFileSizeInHumanReadableFormat,
 } from '../model/utils.js'
-import httpServer from '../model/httpServer.js'
+import jmDownload from '../model/jmDownload.js'
 import { _DataPath, pluginAuthor } from '../data/system/pluginConstants.js'
 import common from '../../../lib/common/common.js'
 import fs from 'fs'
@@ -31,44 +31,8 @@ export class jmDownloadApp extends plugin {
     })
   }
 
-  static commandExists = false
-  static downloadPathPrefix = `${_DataPath}/JMComic/cache/download`
-  static convertPathPrefix = `${_DataPath}/JMComic/cache/convert`
-
-  /** 插件初始化时执行 */
-  static async init() {
-    await checkCommand()
-    // 清理临时文件目录
-    try {
-      // 清理下载目录内的所有子目录
-      if (fs.existsSync(this.downloadPathPrefix)) {
-        const downloadDirs = fs.readdirSync(this.downloadPathPrefix)
-        for (const dir of downloadDirs) {
-          const dirPath = `${this.downloadPathPrefix}/${dir}`
-          if (fs.statSync(dirPath).isDirectory()) {
-            fs.rmSync(dirPath, { recursive: true, force: true })
-            tjLogger.info(`已清理 JMComic 临时文件: ${dirPath}`)
-          }
-        }
-        tjLogger.debug('完成清理 JMComic 临时下载文件')
-      }
-      // 清理转换目录内的所有PDF文件
-      if (fs.existsSync(this.convertPathPrefix)) {
-        const convertFiles = fs.readdirSync(this.convertPathPrefix)
-        for (const file of convertFiles) {
-          if (file.endsWith('.pdf')) {
-            fs.unlinkSync(`${this.convertPathPrefix}/${file}`)
-            tjLogger.info(`已清理 JMComic 临时文件: ${file}`)
-          }
-        }
-        tjLogger.debug('完成清理 JMComic 临时转换文件')
-      }
-    } catch (err) {
-      tjLogger.warn(`清理 JMComic 临时文件出错: ${err.message}`)
-    }
-  }
-
   async jmDownload() {
+    // 一些预检
     if (!config.getConfig().JMComic.enable) {
       await this.reply('JMComic 功能未启用', true)
       return
@@ -79,44 +43,51 @@ export class jmDownloadApp extends plugin {
       await this.reply('不带 ID 我怎么下嘛!', true)
       return
     }
+
     // 判断 ID 是否为纯数字
     if (!/^\d+$/.test(id)) {
       await this.reply('ID 只能是数字哦!', true)
       return
     }
 
-    // 去除 id 可能存在的开头的 0
-    id = parseInt(id).toString()
-
-    tjLogger.debug(`准备下载 JMComic ID: ${id}, qq=${this.e.user_id}`)
-    let msg = `准备下载 JMComic ID: ${id}`
-    let jmPrepareMsg = await this.reply(msg, true)
-    let command = ''
-    let commandResult = {}
-    const downloadPath = `${jmDownloadApp.downloadPathPrefix}/${id}`
-    let pdfPassword = config.getConfig().JMComic.pdfPassword
-    const pdfPath = `${jmDownloadApp.convertPathPrefix}/${id}${
-      pdfPassword ? `_Password` : ''
-    }.pdf`
-    if (!jmDownloadApp.commandExists) {
-      // 命令不存在
+    // 检查 JMComic 命令是否存在
+    if (!jmDownload.commandExists) {
       tjLogger.info('JMComic 命令不存在, 任务终止')
       this.reply('JMComic 不存在, 请先安装', true)
-      if (this.e.group) this.e.group.recallMsg(jmPrepareMsg.message_id)
-      if (this.e.friend) this.e.friend.recallMsg(jmPrepareMsg.message_id)
       return
     }
 
-    // 开始下载
-    tjLogger.debug(`开始下载 JMComic ID: ${id}`)
+    // 检查消息渠道是否为群聊或私聊
+    if (!this.e.isGroup && !this.e.isPrivate) {
+      await this.reply('不支持的消息来源, 请在群聊或私聊使用', true)
+      return
+    }
+
+    // 去除 id 可能存在的开头的 0
+    id = parseInt(id).toString()
+
+    let msg = `准备下载 JMComic ID: ${id}`
+    let jmPrepareMsg = await this.reply(msg, true)
+
+    // 变量
+    let command = ''
+    let commandResult = {}
+    const downloadPath = `${jmDownload.downloadPathPrefix}/${id}`
+    let pdfPassword = config.getConfig().JMComic.pdfPassword
+    const pdfPath = `${jmDownload.convertPathPrefix}/${id}${
+      pdfPassword ? `_Password` : ''
+    }.pdf`
+    tjLogger.debug(`准备下载 JMComic ID: ${id}, qq=${this.e.user_id}, path=${downloadPath}, pdfPath=${pdfPath}, password=${pdfPassword}`)
+
     // 如果downloadPath存在, 则先删除
     if (fs.existsSync(downloadPath)) {
       fs.rmSync(downloadPath, { recursive: true, force: true })
       tjLogger.info(`已清理 JMComic 临时文件: ${downloadPath}`)
     }
+    // 开始下载
+    tjLogger.info(`开始下载 JMComic ID: ${id}`)
     command = `jmcomic ${id} --option="${_DataPath}/JMComic/option.yml"`
     commandResult = await runCommand(command)
-    tjLogger.debug(`jmcomic 下载结果: ${JSON.stringify(commandResult)}`)
 
     // 下载完成, 撤回准备消息
     if (this.e.group) this.e.group.recallMsg(jmPrepareMsg.message_id)
@@ -138,11 +109,13 @@ export class jmDownloadApp extends plugin {
       if (match) {
         if (match[1]?.includes('请求的本子不存在'))
           match[1] = '此 ID 不存在或登录可见'
+        tjLogger.info(`下载 JMComic ${id} 失败: ${match[1]}`)
         this.reply(
           `下载失败, 错误信息: \n${match[1].replace(/\\n/g, '\n').trim()}`,
           true
         )
       } else {
+        tjLogger.info(`下载 JMComic ${id} 失败: 无法识别的错误`)
         let msg = await common.makeForwardMsg(
           this.e,
           [
@@ -191,105 +164,16 @@ export class jmDownloadApp extends plugin {
           `转 PDF 成功, 文件大小 ${pdfSize}, 准备发送...`,
           true
         )
+        if (this.e.isGroup) this.e.group.recallMsg(downloadSuccessMsg.message_id)
+        if (this.e.isPrivate) this.e.private.recallMsg(downloadSuccessMsg.message_id)
+
         // 发送 PDF
-        if (this.e.isGroup) {
-          this.e.group.recallMsg(downloadSuccessMsg.message_id)
-          let ret
-          try {
-            ret = await this.e.group.fs.upload(pdfPath)
-            tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
-            fs.unlinkSync(pdfPath)
-            this.e.group.recallMsg(prepareSendFileMsg.message_id)
-            if (ret !== null && typeof ret !== 'object') {
-              return `文件发送失败, 可能是协议不支持`
-            } else if (
-              config.getConfig().JMComic.sendPdfPassword &&
-              pdfPassword
-            ) {
-              this.reply(`文件发送成功, 密码: ${pdfPassword}`)
-            }
-          } catch (e) {
-            tjLogger.error(`发送文件失败: ${e.message}`)
-            if (e.message == 'group space not enough')
-              e.message = '群文件空间不足'
-            else if (e.message.includes('send feed not all success'))
-              // send feed not all success. failed_count=1 , 大概是协议问题
-              e.message = '部分分片未发送成功'
-            else if (e.message.includes('unknown highway error'))
-              // 大概也是协议问题
-              e.message = '未知通道错误'
-            ret = null
-            let msg = `文件发送失败, 错误信息: \n${e.message}`
-            if (
-              config.getConfig().httpServer.enable &&
-              e.message != '群文件空间不足'
-            ) {
-              msg += `\n将尝试上传到内置服务器...`
-              let msgId = await this.reply(msg, true)
-              let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
-              if (tmpFileUrl) {
-                msg = `文件大小: ${pdfSize}\n${
-                  config.getConfig().JMComic.sendPdfPassword && pdfPassword
-                    ? `密码: ${pdfPassword}\n`
-                    : ''
-                }点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
-                this.e.group.recallMsg(msgId.message_id)
-                this.reply(msg, true)
-              }
-            } else {
-              this.reply(msg, true)
-            }
-          }
-          return null
-        } else if (this.e.isPrivate) {
-          this.e.friend.recallMsg(downloadSuccessMsg.message_id)
-          let ret
-          try {
-            ret = await this.e.friend.sendFile(pdfPath)
-            tjLogger.debug(`发送文件结果: ${JSON.stringify(ret)}`)
-            tjLogger.debug(`清理 JMComic 临时文件: ${pdfPath}`)
-            fs.unlinkSync(pdfPath)
-            this.e.friend.recallMsg(prepareSendFileMsg.message_id)
-            if (ret !== null && typeof ret !== 'object') {
-              return `文件发送失败, 可能是协议不支持`
-            } else if (
-              config.getConfig().JMComic.sendPdfPassword &&
-              pdfPassword
-            ) {
-              this.reply(`文件发送成功, 密码: ${pdfPassword}`)
-            }
-          } catch (e) {
-            tjLogger.error(`发送文件失败: ${e.message}`)
-            if (e.message.includes('send feed not all success'))
-              // send feed not all success. failed_count=1 , 大概是协议问题
-              e.message = '部分分片未发送成功'
-            else if (e.message.includes('unknown highway error'))
-              // 大概也是协议问题
-              e.message = '未知通道错误'
-            ret = null
-            // this.reply(`文件发送失败, 错误信息: ${e.message}`, true)
-            let msg = `文件发送失败, 错误信息: \n${e.message}`
-            if (config.getConfig().httpServer.enable) {
-              msg += `\n将尝试上传到内置服务器...`
-              let msgId = await this.reply(msg, true)
-              let tmpFileUrl = httpServer.createTmpFileUrl(pdfPath, 300)
-              if (tmpFileUrl) {
-                msg = `文件大小: ${pdfSize}\n${
-                  config.getConfig().JMComic.sendPdfPassword && pdfPassword
-                    ? `密码: ${pdfPassword}\n`
-                    : ''
-                }点击链接下载: \n${tmpFileUrl}\n链接有效期约 5 分钟`
-                this.e.friend.recallMsg(msgId.message_id)
-                this.reply(msg, true)
-              }
-            } else {
-              this.reply(msg, true)
-            }
-          }
-          return null
-        } else {
-          return `不支持的消息来源, 无法发送文件, 请尝试在群聊使用`
+        let sendPdfRet = await jmDownload.sendPdf(pdfPath, pdfSize, pdfPassword, this.e)
+        if (sendPdfRet) { // 返回非空, 说明处理失败
+          this.reply(`发送 PDF 操作失败: ${sendPdfRet}`)
         }
+        if (this.e.isGroup) this.e.group.recallMsg(prepareSendFileMsg.message_id)
+        if (this.e.isPrivate) this.e.private.recallMsg(prepareSendFileMsg.message_id)
       } else {
         this.reply(`图片转 PDF 失败, 错误信息: ${convertResult}`, true)
       }
@@ -309,25 +193,5 @@ export class jmDownloadApp extends plugin {
   }
 }
 
-async function checkCommand() {
-  // 启动时检查命令是否存在
-  tjLogger.debug('开始检查 JMComic 命令是否存在')
-  let command = 'jmcomic'
-  let commandResult = {}
-  commandResult = await runCommand(command)
-  tjLogger.debug(`jmcomic 命令测试结果: ${JSON.stringify(commandResult)}`)
-  if (!commandResult.output) {
-    // 命令不存在
-    jmDownloadApp.commandExists = false
-    tjLogger.error(
-      'JMComic 命令不存在, JM 下载功能将不可用, 请先按照教程安装 JMComic 并重启 Bot'
-    )
-  } else {
-    // 命令存在
-    jmDownloadApp.commandExists = true
-    tjLogger.info('JMComic 命令存在, JM 下载功能可用')
-  }
-}
-
 // 在插件加载时执行初始化
-jmDownloadApp.init()
+jmDownload.init()
