@@ -72,17 +72,17 @@ export class jmDownloadApp extends plugin {
     // 变量
     let command = ''
     let commandResult = {}
-    const downloadPath = `${jmDownload.downloadPathPrefix}/${id}`
+    let downloadPath = `${jmDownload.downloadPathPrefix}/${id}`
     let pdfPassword = config.getConfig().JMComic.pdfPassword
     const pdfPath = `${jmDownload.convertPathPrefix}/${id}${
       pdfPassword ? `_Password` : ''
     }.pdf`
     tjLogger.debug(`准备下载 JMComic ID: ${id}, qq=${this.e.user_id}, path=${downloadPath}, pdfPath=${pdfPath}, password=${pdfPassword}`)
 
-    // 如果downloadPath存在, 则先删除
-    if (fs.existsSync(downloadPath)) {
-      fs.rmSync(downloadPath, { recursive: true, force: true })
-      tjLogger.info(`已清理 JMComic 临时文件: ${downloadPath}`)
+    // 如果downloadPath存在, 说明有相同任务正在下载, 循环等待到目录不存在再继续
+    while (fs.existsSync(downloadPath)) {
+      await common.sleep(600)
+      tjLogger.debug(`JMComic ID: ${id} 已有相同任务在下载, 等待 600ms...`)
     }
     // 开始下载
     tjLogger.info(`开始下载 JMComic ID: ${id}`)
@@ -131,6 +131,8 @@ export class jmDownloadApp extends plugin {
     } else if (commandResult.output.includes('本子下载完成')) {
       // 下载成功
       let downloadSuccessMsg = await this.reply('下载成功, 准备转换...', true)
+      // 先给目录重命名加上时间戳后缀防止同时重复下载冲突
+      downloadPath += `_${Date.now()}`
       // 如果pdfPath存在, 则先删除
       if (fs.existsSync(pdfPath)) {
         fs.unlinkSync(pdfPath)
