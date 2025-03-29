@@ -77,7 +77,9 @@ export class jmDownloadApp extends plugin {
     const pdfPath = `${jmDownload.convertPathPrefix}/${id}${
       pdfPassword ? `_Password` : ''
     }.pdf`
-    tjLogger.debug(`准备下载 JMComic ID: ${id}, qq=${this.e.user_id}, path=${downloadPath}, pdfPath=${pdfPath}, password=${pdfPassword}`)
+    tjLogger.debug(
+      `准备下载 JMComic ID: ${id}, qq=${this.e.user_id}, path=${downloadPath}, pdfPath=${pdfPath}, password=${pdfPassword}`
+    )
 
     // 如果downloadPath存在, 说明有相同任务正在下载, 循环等待到目录不存在再继续
     while (fs.existsSync(downloadPath)) {
@@ -135,10 +137,7 @@ export class jmDownloadApp extends plugin {
       let downloadSuccessMsg = await this.reply('下载成功, 准备转换...', true)
       // 先给目录重命名加上时间戳后缀防止同时重复下载冲突
       const timeStamp = Date.now()
-      await fs.renameSync(
-        downloadPath,
-        `${downloadPath}_${timeStamp}`
-      )
+      await fs.renameSync(downloadPath, `${downloadPath}_${timeStamp}`)
       downloadPath += `_${timeStamp}`
       // 如果pdfPath存在, 则先删除
       if (fs.existsSync(pdfPath)) {
@@ -169,18 +168,32 @@ export class jmDownloadApp extends plugin {
               `删除下载的图片路径 ${downloadPath} 失败: ${err.message}`
             )
         })
-        let prepareMsg = `转 PDF 成功, 文件大小 ${pdfSize}, 准备${config.getConfig().JMComic.sendFilePolicy == 3 ? `上传到内置服务器` : `发送`}...`
+        let prepareMsg = `转 PDF 成功, 文件大小 ${pdfSize}, 准备${
+          config.getConfig().JMComic.sendFilePolicy == 3
+            ? `上传到内置服务器`
+            : `发送`
+        }...`
         let prepareSendFileMsg = await this.reply(prepareMsg, true)
-        if (this.e.isGroup) this.e.group.recallMsg(downloadSuccessMsg.message_id)
-        if (this.e.isPrivate) this.e.private.recallMsg(downloadSuccessMsg.message_id)
+        if (this.e.isGroup)
+          this.e.group.recallMsg(downloadSuccessMsg.message_id)
+        if (this.e.isPrivate)
+          this.e.private.recallMsg(downloadSuccessMsg.message_id)
 
         // 发送 PDF
-        let sendPdfRet = await jmDownload.sendPdf(pdfPath, pdfSize, pdfPassword, this.e)
-        if (sendPdfRet) { // 返回非空, 说明处理失败
+        let sendPdfRet = await jmDownload.sendPdf(
+          pdfPath,
+          pdfSize,
+          pdfPassword,
+          this.e
+        )
+        if (sendPdfRet) {
+          // 返回非空, 说明处理失败
           this.reply(`发送 PDF 操作失败: ${sendPdfRet}`)
         }
-        if (this.e.isGroup) this.e.group.recallMsg(prepareSendFileMsg.message_id)
-        if (this.e.isPrivate) this.e.private.recallMsg(prepareSendFileMsg.message_id)
+        if (this.e.isGroup)
+          this.e.group.recallMsg(prepareSendFileMsg.message_id)
+        if (this.e.isPrivate)
+          this.e.private.recallMsg(prepareSendFileMsg.message_id)
       } else {
         this.reply(`图片转 PDF 失败, 错误信息: ${convertResult}`, true)
       }

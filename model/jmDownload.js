@@ -26,7 +26,9 @@ export default class jmDownload {
     let commandResult = await runCommand('jmcomic')
     if (!commandResult.output) {
       this.commandExists = false
-      tjLogger.error('JMComic 命令不存在, JM 下载功能将不可用, 请先按照教程安装 JMComic 并重启 Bot')
+      tjLogger.error(
+        'JMComic 命令不存在, JM 下载功能将不可用, 请先按照教程安装 JMComic 并重启 Bot'
+      )
     } else {
       this.commandExists = true
       tjLogger.info('JMComic 命令存在, JM 下载功能可用')
@@ -78,13 +80,17 @@ export default class jmDownload {
     if (!e.isGroup && !e.isPrivate) return '未知消息来源, 请检查'
     let sendFileRet
     let sendFilePolicy = config.getConfig().JMComic.sendFilePolicy
-    tjLogger.debug(`发送 PDF 策略: ${sendFilePolicy}, (1=只传文件, 2=优先文件, 3=只传链接)`)
+    tjLogger.debug(
+      `发送 PDF 策略: ${sendFilePolicy}, (1=只传文件, 2=优先文件, 3=只传链接)`
+    )
 
-    if (sendFilePolicy == 1 || sendFilePolicy == 2) { // 只传文件或优先传文件
+    if (sendFilePolicy == 1 || sendFilePolicy == 2) {
+      // 只传文件或优先传文件
       try {
         if (e.isGroup) sendFileRet = await e.group.fs.upload(pdfPath)
         else sendFileRet = await e.friend.sendFile(pdfPath)
-      } catch (err) { // 发送文件出问题
+      } catch (err) {
+        // 发送文件出问题
 
         tjLogger.error(`发送文件失败: ${err.message}`)
         if (err.message == 'group space not enough')
@@ -98,7 +104,8 @@ export default class jmDownload {
 
         let msg = `文件发送失败, 错误信息: \n${err.message}`
 
-        if (sendFilePolicy == 2 && err.message != '群文件空间不足') { // 发送策略为优先文件并且错误不是群文件空间不足的话, 尝试创建临时链接
+        if (sendFilePolicy == 2 && err.message != '群文件空间不足') {
+          // 发送策略为优先文件并且错误不是群文件空间不足的话, 尝试创建临时链接
           msg += `\n将尝试上传到内置服务器...`
           let msgId = await e.reply(msg, true)
           let sendLinkRet = await sendLink()
@@ -118,10 +125,7 @@ export default class jmDownload {
         tjLogger.info(`发送文件成功: ${pdfPath}`)
         fs.unlinkSync(pdfPath)
         tjLogger.debug(`已删除临时文件: ${pdfPath}`)
-        if (
-          config.getConfig().JMComic.sendPdfPassword &&
-          pdfPassword
-        ) {
+        if (config.getConfig().JMComic.sendPdfPassword && pdfPassword) {
           tjLogger.debug(`发送密码 ${pdfPassword}, pdfPath=${pdfPath}`)
           e.reply(`文件发送成功, 密码: ${pdfPassword}`)
         }
@@ -134,7 +138,8 @@ export default class jmDownload {
       }
 
       return
-    } else if (sendFilePolicy == 3) { // 发送策略为只传链接
+    } else if (sendFilePolicy == 3) {
+      // 发送策略为只传链接
       let sendLinkRet = await sendLink()
       e.reply(sendLinkRet, true)
     } else {
@@ -154,6 +159,5 @@ export default class jmDownload {
         return '创建临时链接失败'
       }
     }
-
   }
 }
