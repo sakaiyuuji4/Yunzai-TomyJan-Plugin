@@ -82,19 +82,19 @@ export class jmDownloadApp extends plugin {
     )
 
     // 如果downloadPath存在, 说明有相同任务正在下载, 循环等待到目录不存在再继续
-    const maxWaitTime = 10 * 60 * 1000; // 10分钟
-    const startTime = Date.now();
+    const maxWaitTime = 10 * 60 * 1000 // 10分钟
+    const startTime = Date.now()
 
     while (fs.existsSync(downloadPath)) {
       if (Date.now() - startTime > maxWaitTime) {
-        tjLogger.warn(`等待下载目录释放超时: ${downloadPath}`);
+        tjLogger.warn(`等待下载目录释放超时: ${downloadPath}`)
         this.reply(`等待下载目录释放超时, 待会再试试吧~`, true)
         if (this.e.group) this.e.group.recallMsg(jmPrepareMsg.message_id)
         if (this.e.friend) this.e.friend.recallMsg(jmPrepareMsg.message_id)
         return
       }
-      await common.sleep(2500);
-      tjLogger.debug(`JMComic ID: ${id} 已有相同任务在下载, 等待中...`);
+      await common.sleep(2500)
+      tjLogger.debug(`JMComic ID: ${id} 已有相同任务在下载, 等待中...`)
     }
     // 创建下载目录作为任务标记
     await fs.mkdirSync(downloadPath, { recursive: true })
