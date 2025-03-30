@@ -1,3 +1,20 @@
+## [0.1.11-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.10-rel...v0.1.11-rel) (2025-03-30)
+
+
+### Bug Fixes
+
+* **autoTask:** 更换检查更新的 GHProxy 地址 ([d3d1dde](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/d3d1ddea2d14d5b60878785a6b381c7dc48feff1))
+* **JMComic:** 任务出错后删除下载目录 ([0afa274](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/0afa274d3cb5fc42ef78b1e337183e002328288b))
+
+
+### Performance Improvements
+
+* **autoTask:** 删除 versionCache.json ([dd247bc](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/dd247bc7dec839b14d0ef48b62a4d66acb162010))
+* **guoba:** 锅巴适配的帮助文案 ([b0efa44](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/b0efa4463e2157e45dd9c4088d574a9e29f8d415))
+* **JMComic:** 等待目录释放超时时间 ([b7f5c99](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/commit/b7f5c9983dbeb3ab4a11771c1bd655909bd55ead))
+
+
+
 ## [0.1.10-rel](https://github.com/TomyJan/Yunzai-TomyJan-Plugin/compare/v0.1.9-rel...v0.1.10-rel) (2025-03-29)
 
 
