@@ -54,8 +54,8 @@ export function supportGuoba() {
         {
           field: 'logger.logLevel',
           label: '日志等级',
-          helpMessage: 'TJ插件的日志等级, 与 Yunzai 的独立',
-          bottomHelpMessage: '请选择日志等级, 通常应选择 info',
+          helpMessage: 'TJ 插件内置的日志记录器的日志等级, 与 Yunzai 的独立',
+          bottomHelpMessage: '更改即时生效, 通常应选择 info',
           component: 'Select',
           componentProps: {
             options: [
@@ -64,15 +64,15 @@ export function supportGuoba() {
               { label: 'warn', value: 'warn' },
               { label: 'error', value: 'error' },
             ],
-            placeholder: '读取失败',
+            placeholder: '配置项异常',
           },
         },
         {
           field: 'logger.saveToFile',
           label: '保存日志',
           helpMessage:
-            '独立保存TJ插件的日志, 保存目录位于插件根目录 ./data/logs/',
-          bottomHelpMessage: '是否将日志保存到文件',
+            '独立保存 TJ 插件的日志到 插件根目录/data/logs/',
+          bottomHelpMessage: '更改即时生效, 通常不建议启用',
           component: 'Switch',
         },
         {
@@ -82,30 +82,30 @@ export function supportGuoba() {
         {
           field: 'JMComic.enable',
           label: '启用',
-          helpMessage: '启用 JMComic 功能',
-          bottomHelpMessage: '启用 JMComic 功能, 默认启用',
+          helpMessage: '是否启用 JMComic 功能',
+          bottomHelpMessage: '更改即时生效',
           component: 'Switch',
         },
         {
           field: 'JMComic.pdfPassword',
           label: 'PDF 密码',
-          helpMessage: '设置 PDF 密码',
-          bottomHelpMessage: '设置 PDF 密码, 留空不设置',
+          helpMessage: '设置 JMComic 功能发送的 PDF 密码',
+          bottomHelpMessage: '更改即时生效, 留空不设置密码',
           component: 'Input',
         },
         {
           field: 'JMComic.sendPdfPassword',
           label: '发送 PDF 密码',
-          helpMessage: '是否发送 PDF 密码',
-          bottomHelpMessage: '是否发送 PDF 密码, 默认不发送',
+          helpMessage: '发送 JMComic 功能发送的 PDF 时是否同时发送 PDF 密码',
+          bottomHelpMessage: '更改即时生效, 默认不发送',
           component: 'Switch',
         },
         {
           field: 'JMComic.sendFilePolicy',
           label: '发送策略',
-          helpMessage: '发送策略, 只传文件 / 优先文件 / 只发链接',
+          helpMessage: '发送 JMComic 功能发送的 PDF 的策略, 只传文件 / 优先文件 / 只发链接',
           bottomHelpMessage:
-            '发送文件的策略, 设置非只传文件请配置并开启下方的 HTTP 服务器',
+            '更改即时生效, 若选择非 只传文件 请开启并配置好下方的 HTTP 服务器',
           component: 'Select',
           componentProps: {
             options: [
@@ -113,7 +113,7 @@ export function supportGuoba() {
               { label: '优先文件', value: 2 },
               { label: '只发链接', value: 3 },
             ],
-            placeholder: '读取配置失败',
+            placeholder: '配置项异常',
           },
         },
         {
@@ -124,22 +124,22 @@ export function supportGuoba() {
           field: 'httpServer.enable',
           label: '启用',
           helpMessage:
-            '请确保配置正确, 插件只会依照此值决定是否使用内置服务器, 不会做更多判断',
-          bottomHelpMessage: '启用 HTTP 服务器, 默认关闭',
+            '请确保配置正确再开启, 插件只会依照此值决定是否使用内置服务器, 不会做更多判断',
+          bottomHelpMessage: '更改重启生效, 插件内置 HTTP 服务器, 默认关闭',
           component: 'Switch',
         },
         {
           field: 'httpServer.listenPort',
           label: '监听端口',
-          helpMessage: 'HTTP 服务器监听端口, 默认 5252',
-          bottomHelpMessage: 'HTTP 服务器监听端口, 默认 5252',
+          helpMessage: '插件内置 HTTP 服务器监听端口',
+          bottomHelpMessage: '更改重启生效, 默认 5252',
           component: 'Input',
         },
         {
           field: 'httpServer.accessUrl',
           label: '访问 URL',
-          helpMessage: 'HTTP 服务器访问 URL, 默认 http://127.0.0.1:5252/',
-          bottomHelpMessage: 'HTTP 服务器访问 URL, 默认 http://127.0.0.1:5252/',
+          helpMessage: '插件内置 HTTP 服务器供外部访问的访问 URL',
+          bottomHelpMessage: '更改重启生效, 默认 http://127.0.0.1:5252/',
           component: 'Input',
         },
         {
@@ -149,25 +149,25 @@ export function supportGuoba() {
         {
           field: 'useRandomBgInCard',
           label: '随机背景图',
-          helpMessage: '卡片是否使用随机背景图',
+          helpMessage: '卡片是否使用随机背景图, 获取失败会回退到最后一张图或者本地背景图, 本地默认背景图: 插件根目录/resources/img/common/bg/Alisa-Echo_0.jpg',
           bottomHelpMessage:
-            '背景图 API: https://api.tomys.top/api/pnsWallPaper 均为战双官方壁纸, 获取失败会回退到最后一张图或者本地背景图, 本地默认背景图: /resources/img/common/bg/Alisa-Echo_0.jpg',
+            '更改即时生效, 背景图 API: https://api.tomys.top/api/pnsWallPaper 均为战双官方壁纸',
           component: 'Switch',
         },
         {
           field: 'attemptSendNonFriend',
           label: '发送非好友',
-          helpMessage: '是否尝试向非好友发送消息',
-          bottomHelpMessage: '是否尝试向非好友发送消息',
+          helpMessage: '自动任务推送等场景用到',
+          bottomHelpMessage: '更改即时生效, 是否尝试向非好友发送消息',
           component: 'Switch',
         },
         {
           field: 'botQQ',
           label: '机器人QQ',
           helpMessage:
-            '如果使用第三方适配器, 请设置, 否则 bot 的自动任务消息将无法推送, 留空则为自动获取',
+            '留空则为自动获取',
           bottomHelpMessage:
-            '如果使用第三方适配器, 请设置, 否则 bot 的自动任务消息将无法推送, 留空则为自动获取',
+            '更改即时生效, 使用某些第三方适配器可能需要设置',
           component: 'Input',
         },
       ],
