@@ -99,6 +99,13 @@ export class jmDownloadApp extends plugin {
 
     if (!commandResult.output) {
       // 运行出现错误
+      // 删除下载目录
+      fs.rm(downloadPath, { recursive: true, force: true }, (err) => {
+        if (err)
+          tjLogger.warn(
+            `删除下载的图片路径 ${downloadPath} 失败: ${err.message}`
+          )
+      })
       await this.reply(
         `下载失败, 请检查 ID 是否正确. 错误信息: ${commandResult.err}`,
         true
@@ -106,6 +113,13 @@ export class jmDownloadApp extends plugin {
       return
     } else if (commandResult.output.includes('jmcomic.jm_exception')) {
       // 命令结果有 JMComic 的报错
+      // 删除下载目录
+      fs.rm(downloadPath, { recursive: true, force: true }, (err) => {
+        if (err)
+          tjLogger.warn(
+            `删除下载的图片路径 ${downloadPath} 失败: ${err.message}`
+          )
+      })
       // 出错了, 取回 jmcomic 报错的内容
       const match = commandResult.output.match(
         /MissingAlbumPhotoException\('([^']+)/
