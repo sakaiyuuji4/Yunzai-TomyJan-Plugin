@@ -1,3 +1,4 @@
+import path from 'path';
 import plugin from '../../../lib/plugins/plugin.js'
 import tjLogger from '../components/logger.js'
 import config from '../components/config.js'
@@ -30,7 +31,7 @@ export class jmDownloadApp extends plugin {
       ],
     })
   }
-
+  static targetDir = `${_DataPath}/JMComic/download`
   async jmDownload() {
     // 一些预检
     if (!config.getConfig().JMComic.enable) {
@@ -181,6 +182,16 @@ export class jmDownloadApp extends plugin {
         }
       )
       tjLogger.debug(`图片转 PDF 结果: ${convertResult}`)
+      if(config.getConfig().keepFile){
+        // 新增移动到归档目录逻辑
+        var targetDir = `${jmDownloadApp.targetDir}`
+        if (!fs.existsSync(targetDir)) {
+          fs.mkdirSync(targetDir, { recursive: true });
+        }
+        var file = path.basename(pdfPath)
+        fs.cp(pdfPath, `${jmDownloadApp.targetDir}/${file}`);
+        tjLogger.info(`已复制 PDF 文件到归档目录: ${jmDownloadApp.targetDir}/${file}`);
+      }
       if (convertResult == pdfPath) {
         // 计算 PDF 文件大小
         const pdfSize = getFileSizeInHumanReadableFormat(pdfPath)
