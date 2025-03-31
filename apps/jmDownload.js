@@ -189,7 +189,7 @@ export class jmDownloadApp extends plugin {
           fs.mkdirSync(targetDir, { recursive: true });
         }
         var file = path.basename(pdfPath)
-        fs.cp(pdfPath, `${jmDownloadApp.targetDir}/${file}`);
+        fs.copyFile(pdfPath, `${jmDownloadApp.targetDir}/${file}`);
         tjLogger.info(`已复制 PDF 文件到归档目录: ${jmDownloadApp.targetDir}/${file}`);
       }
       if (convertResult == pdfPath) {
