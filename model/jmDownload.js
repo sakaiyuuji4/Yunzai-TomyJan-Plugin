@@ -4,11 +4,13 @@ import { runCommand } from './utils.js'
 import httpServer from './httpServer.js'
 import { _DataPath } from '../data/system/pluginConstants.js'
 import fs from 'fs'
+import path from 'path'
 
 export default class jmDownload {
   static commandExists = false
   static downloadPathPrefix = `${_DataPath}/JMComic/cache/download`
   static convertPathPrefix = `${_DataPath}/JMComic/cache/convert`
+  static targetDir = `${_DataPath}/JMComic/download`
 
   /**
    * 初始化服务
@@ -18,6 +20,16 @@ export default class jmDownload {
     await this.cleanTempFiles()
   }
 
+  static async keepFile(pdfPath){
+    // 新增移动到归档目录逻辑
+    var targetDir = `${this.targetDir}`
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    var file = path.basename(pdfPath)
+    fs.copyFile(pdfPath, `${this.targetDir}/${file}`);
+    tjLogger.info(`已复制 PDF 文件到归档目录: ${this.targetDir}/${file}`);
+  }
   /**
    * 检查命令是否存在
    */
